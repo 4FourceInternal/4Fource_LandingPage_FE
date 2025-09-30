@@ -47,19 +47,19 @@ const CMSContentBlock = ({
   return (
     <div className="space-y-6">
       {title && (
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tech-text-gradient leading-tight">
           {title}
         </h1>
       )}
       
       {subtitle && (
-        <h2 className="text-xl md:text-2xl font-semibold text-orange-500">
+        <h2 className="text-xl md:text-2xl font-semibold text-tech-600">
           {subtitle}
         </h2>
       )}
       
       {description && (
-        <div className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-4xl">
+        <div className="text-lg md:text-xl text-accent-600 leading-relaxed max-w-4xl">
           {description}
         </div>
       )}

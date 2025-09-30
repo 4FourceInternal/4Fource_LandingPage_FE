@@ -114,138 +114,124 @@ const Services = () => {
   return (
     <>
       <Helmet>
-        <title>{seo?.metaTitle || seo?.title || 'Our Service - Qoyy Global'}</title>
-        <meta name="description" content={seo?.metaDescription || seo?.description || 'Solutions that drive brands forward. Media monitoring and public relations services that keep your brand informed, relevant, and strategically visible.'} />
+        <title>{seo?.metaTitle || seo?.title || 'Our Services - Tech Solutions'}</title>
+        <meta name="description" content={seo?.metaDescription || seo?.description || 'Innovation that drives businesses forward. Technology solutions that keep your business informed, relevant, and strategically competitive.'} />
       </Helmet>
 
-      {/* Full Page Background Layer - Behind Everything */}
-      <div className="fixed inset-0 w-full h-full overflow-hidden -z-10">
-        {/* Background Images with Crossfade Animation - Only for actual slides */}
-        {serviceSlides && serviceSlides.length > 0 && serviceSlides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-in-out ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
-            style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${getImageUrl(slide.backgroundImage)})`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Content Layer - Above Background */}
       <main className="container-custom min-h-screen flex flex-col relative z-0">
-        <h2 className="text-center text-white text-xl mt-10">
-          OUR SERVICE
-        </h2>
-        <div className="relative flex items-center justify-center rounded-lg mt-8 mb-8 flex-grow"> 
-          <div className="relative w-full flex flex-col items-center justify-center px-4 h-full">
-            <h1 className="text-center text-2xl md:text-3xl lg:text-4xl font-extrabold text-white mb-6 uppercase">
-              {heading}
-            </h1>
-           
-            {/* Sliding Content Section */}
-            <div className="w-full mb-8">
-              {serviceSlides && serviceSlides.length > 0 && serviceSlides[currentSlide] ? (
-                <div className="relative bg-black bg-opacity-30 rounded-lg p-8 mb-8 h-96 overflow-hidden">
-                  <div className={`text-center transition-all duration-700 ease-in-out transform ${
-                    isTransitioning ? 'opacity-0 translate-x-10' : 'opacity-100 translate-x-0'
-                  }`}>
-                    <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 transition-all duration-500 ease-in-out">
-                      {serviceSlides[currentSlide]?.title || 'Service Title'}
-                    </h3>
-                    <p className="text-lg text-white mb-6 leading-relaxed transition-all duration-600 ease-in-out">
-                      {serviceSlides[currentSlide]?.description || 'Service description will appear here.'}
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {serviceSlides[currentSlide] && Array.isArray(serviceSlides[currentSlide].features) ? 
-                        serviceSlides[currentSlide].features.map((feature, index) => (
-                          <div
-                            key={index}
-                            className={`flex items-center text-white transition-all duration-700 ease-in-out transform ${
-                              isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-                            }`}
-                            style={{ transitionDelay: `${index * 100}ms` }}
-                          >
-                            <span className="text-orange-500 mr-3 text-xl">✓</span>
-                            <span className="text-lg">{feature}</span>
-                          </div>
-                        ))
-                        : 
-                        ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'].map((feature, index) => (
-                          <div
-                            key={index}
-                            className={`flex items-center text-white transition-all duration-700 ease-in-out transform ${
-                              isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-                            }`}
-                            style={{ transitionDelay: `${index * 100}ms` }}
-                          >
-                            <span className="text-orange-500 mr-3 text-xl">✓</span>
-                            <span className="text-lg">{feature}</span>
-                          </div>
-                        ))
-                      }
-                    </div>
-                  </div>
-                 
-                  {/* Right Arrow */}
-                  <button
-                    onClick={nextSlide}
-                    disabled={isTransitioning}
-                    className={`absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-200 bg-opacity-90 hover:bg-gray-300 text-gray-800 p-3 rounded-lg transition-all duration-200 shadow-lg ${
-                      isTransitioning ? 'opacity-50 cursor-not-allowed scale-95' : 'opacity-100 hover:scale-105'
-                    }`}
-                    aria-label="Next service"
-                  >
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
-                  </button>
-                </div>
-              ) : (
-                <div className="relative bg-black bg-opacity-30 rounded-lg p-8 mb-8 h-96 overflow-hidden">
-                  <div className="text-center">
-                    <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                      Loading Services...
-                    </h3>
-                    <p className="text-lg text-white">
-                      Please wait while we load the service information.
-                    </p>
-                  </div>
-                </div>
-              )}
-             
-              {/* Slide Indicators */}
-              {serviceSlides && serviceSlides.length > 0 && (
-                <div className="flex justify-center space-x-2">
-                  {serviceSlides.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        if (!isTransitioning && index !== currentSlide) {
-                          setIsTransitioning(true);
-                          setCurrentSlide(index);
-                          setTimeout(() => setIsTransitioning(false), 700);
-                        }
-                      }}
-                      disabled={isTransitioning}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 transform ${
-                        index === currentSlide
-                          ? 'bg-orange-500 scale-125'
-                          : 'bg-gray-400 hover:bg-gray-300 hover:scale-110'
-                      } ${isTransitioning ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                      aria-label={`Go to slide ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+        {/* Header Section */}
+        <div className="text-center py-16">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-tech-100 text-tech-700 text-sm font-medium mb-6">
+            <span className="w-2 h-2 bg-tech-500 rounded-full mr-2"></span>
+            Our Services
           </div>
+          
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
+            <span className="tech-text-gradient">
+              {heading}
+            </span>
+          </h1>
+        </div>
+           
+        {/* Services Section */}
+        <div className="w-full mb-8">
+          {serviceSlides && serviceSlides.length > 0 && serviceSlides[currentSlide] ? (
+            <div className="relative tech-card p-8 mb-8 min-h-96 overflow-hidden">
+              <div className={`text-center transition-all duration-700 ease-in-out transform ${
+                isTransitioning ? 'opacity-0 translate-x-10' : 'opacity-100 translate-x-0'
+              }`}>
+                <h3 className="text-3xl md:text-4xl font-bold text-accent-800 mb-4 transition-all duration-500 ease-in-out">
+                  {serviceSlides[currentSlide]?.title || 'Service Title'}
+                </h3>
+                <p className="text-lg text-accent-600 mb-6 leading-relaxed transition-all duration-600 ease-in-out">
+                  {serviceSlides[currentSlide]?.description || 'Service description will appear here.'}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {serviceSlides[currentSlide] && Array.isArray(serviceSlides[currentSlide].features) ? 
+                    serviceSlides[currentSlide].features.map((feature, index) => (
+                      <div
+                        key={index}
+                        className={`flex items-center text-accent-700 transition-all duration-700 ease-in-out transform ${
+                          isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
+                        }`}
+                        style={{ transitionDelay: `${index * 100}ms` }}
+                      >
+                        <span className="text-tech-600 mr-3 text-xl">✓</span>
+                        <span className="text-lg">{feature}</span>
+                      </div>
+                    ))
+                    : 
+                    ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'].map((feature, index) => (
+                      <div
+                        key={index}
+                        className={`flex items-center text-accent-700 transition-all duration-700 ease-in-out transform ${
+                          isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
+                        }`}
+                        style={{ transitionDelay: `${index * 100}ms` }}
+                      >
+                        <span className="text-tech-600 mr-3 text-xl">✓</span>
+                        <span className="text-lg">{feature}</span>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+             
+              {/* Navigation Arrow */}
+              <button
+                onClick={nextSlide}
+                disabled={isTransitioning}
+                className={`absolute right-4 top-1/2 transform -translate-y-1/2 bg-tech-100 hover:bg-tech-200 text-tech-700 p-3 rounded-lg transition-all duration-200 shadow-lg ${
+                  isTransitioning ? 'opacity-50 cursor-not-allowed scale-95' : 'opacity-100 hover:scale-105'
+                }`}
+                aria-label="Next service"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <div className="relative tech-card p-8 mb-8 min-h-96 overflow-hidden">
+              <div className="text-center">
+                <h3 className="text-3xl md:text-4xl font-bold text-accent-800 mb-4">
+                  Loading Services...
+                </h3>
+                <p className="text-lg text-accent-600">
+                  Please wait while we load the service information.
+                </p>
+              </div>
+            </div>
+          )}
+         
+          {/* Slide Indicators */}
+          {serviceSlides && serviceSlides.length > 0 && (
+            <div className="flex justify-center space-x-2">
+              {serviceSlides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    if (!isTransitioning && index !== currentSlide) {
+                      setIsTransitioning(true);
+                      setCurrentSlide(index);
+                      setTimeout(() => setIsTransitioning(false), 700);
+                    }
+                  }}
+                  disabled={isTransitioning}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 transform ${
+                    index === currentSlide
+                      ? 'bg-tech-600 scale-125'
+                      : 'bg-tech-300 hover:bg-tech-400 hover:scale-110'
+                  } ${isTransitioning ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </>

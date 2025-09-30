@@ -104,95 +104,79 @@ const Info = () => {
   return (
     <>
       <Helmet>
-        <title>{seo?.metaTitle || seo?.title || 'Quick Info - Qoyy Global'}</title>
-        <meta name="description" content={seo?.metaDescription || seo?.description || 'Answers for every question. Explore our services, process, and support for your marketing and creative needs.'} />
+        <title>{seo?.metaTitle || seo?.title || 'Quick Info - Tech Solutions'}</title>
+        <meta name="description" content={seo?.metaDescription || seo?.description || 'Answers for every question. Explore our services, process, and support for your technology needs.'} />
       </Helmet>
 
-      {/* Full Page Background Layer */}
-      <div className="fixed inset-0 w-full h-full overflow-hidden -z-10">
-        <div
-          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImage})`
-          }}
-        />
-        {/* Layer.png overlay */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src={layerImg}
-            alt="Layer Overlay"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-
       <main className="min-h-screen relative z-0">
-
-        
         <div className="container-custom section-padding">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-center text-white text-xl mb-10">
-              QUICK INFO
-            </h2>
-            {/* Main Heading */}
-            <div className="text-center mb-12">
-              <h1 className="text-5xl md:text-7xl font-bold text-white mb-8">
-                {heading}
+            {/* Header Section */}
+            <div className="text-center py-16">
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-tech-100 text-tech-700 text-sm font-medium mb-6">
+                <span className="w-2 h-2 bg-tech-500 rounded-full mr-2"></span>
+                Quick Info
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
+                <span className="tech-text-gradient">
+                  {heading}
+                </span>
               </h1>
-              <p className="text-xl md:text-2xl text-white">
+              <p className="text-lg md:text-xl text-accent-600 max-w-4xl mx-auto">
                 {lead}
               </p>
             </div>
 
             {/* FAQ Section */}
-            <div className="space-y-8">
+            <div className="space-y-6">
               {faqs.map((faq, index) => (
-                <div key={index} className=" p-8 rounded-lg">
-                  <h3 className="text-2xl font-bold text-white mb-4">
+                <div key={index} className="tech-card p-8">
+                  <h3 className="text-xl md:text-2xl font-bold text-accent-800 mb-4">
                     {faq.question}
                   </h3>
-                  <p className="text-lg text-white leading-relaxed">
+                  <p className="text-accent-600 leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
               ))}
             </div>
 
-            {/* Additional Info */}
+            {/* Process and Why Us Sections */}
             <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* <div className=" p-8 rounded-lg">
-                <h4 className="text-xl font-semibold text-orange-500 mb-4">
-                  {info.process.title}
+              <div className="tech-card p-8">
+                <h4 className="text-xl font-semibold text-tech-600 mb-6">
+                  {process.title}
                 </h4>
-                <div className="space-y-4 text-white">
-                  {info.process.steps.map((step, index) => (
+                <div className="space-y-4">
+                  {process.steps.map((step, index) => (
                     <div key={index} className="flex items-start">
-                      <span className="text-orange-500 mr-3 mt-1 font-bold">{step.num}</span>
+                      <span className="text-tech-600 mr-3 mt-1 font-bold text-lg">{step.num}</span>
                       <div>
-                        <div className="font-semibold">{step.label}</div>
-                        <div className="text-sm">{step.note}</div>
+                        <div className="font-semibold text-accent-800">{step.label}</div>
+                        <div className="text-sm text-accent-600">{step.note}</div>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div> */}
+              </div>
              
-              {/* <div className=" p-8 rounded-lg">
-                <h4 className="text-xl font-semibold text-orange-500 mb-4">
-                  {info.whyUs.title}
+              <div className="tech-card p-8">
+                <h4 className="text-xl font-semibold text-tech-600 mb-6">
+                  {whyUs.title}
                 </h4>
-                <div className="space-y-4 text-white">
-                  {info.whyUs.points.map((point, index) => (
+                <div className="space-y-4">
+                  {whyUs.points.map((point, index) => (
                     <div key={index} className="flex items-start">
-                      <span className="text-orange-500 mr-3 mt-1">✓</span>
+                      <span className="text-tech-600 mr-3 mt-1">✓</span>
                       <div>
-                        <div className="font-semibold">{point.label}</div>
-                        <div className="text-sm">{point.note}</div>
+                        <div className="font-semibold text-accent-800">{point.label}</div>
+                        <div className="text-sm text-accent-600">{point.note}</div>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div> */}
+              </div>
             </div>
           </div>
         </div>

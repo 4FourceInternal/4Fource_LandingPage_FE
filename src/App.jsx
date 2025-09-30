@@ -15,39 +15,14 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-        <div className="min-h-screen w-full">
-          {/* Background image */}
-          <div
-            className={
-              (() => {
-                switch (window.location.pathname) {
-                  case "/home":
-                    return "bg-[url('/src/assets/Perbincangan-Agensi-Kreatif_simple_compose.png')] bg-cover bg-center min-h-screen flex flex-col";
-                  case "/":
-                    return "bg-[url('/src/assets/Gambar_Company_Website.png')] bg-cover bg-center min-h-screen flex flex-col";
-                  case "/about":
-                    return "bg-[url('/src/assets/Gambar_Company_Website.jpg')] bg-cover bg-center min-h-screen flex flex-col";
-                  case "/services":
-                    return "bg-[url('/src/assets/Perbincangan-Agensi-Kreatif_simple_compose.png')] bg-cover bg-center min-h-screen flex flex-col";
-                  case "/info":
-                    return "bg-[url('/src/assets/quickInfo-bg.png')] bg-cover bg-center min-h-screen flex flex-col";
-                  case "/contact":
-                    return "bg-[url('/src/assets/contactUs.png')] bg-cover bg-center min-h-screen flex flex-col";
-                  default:
-                    return "";
-                }
-              })()
-            }
-          >
-          {/* Background image */}
-          <div className="bg-black bg-opacity-20 min-h-screen relative w-full">
-            {/* Layer.png overlay */}
-            <div className="absolute inset-0 z-0">
-              <img 
-                src={Layer} 
-                alt="Layer Overlay" 
-                className="w-full h-full object-cover"
-              />
+        <div className="min-h-screen w-full tech-gradient">
+          {/* Modern tech background with subtle patterns */}
+          <div className="min-h-screen relative">
+            {/* Animated background elements */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute -top-40 -right-40 w-80 h-80 bg-tech-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+              <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-tech-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{animationDelay: '2s'}}></div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-tech-100 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-pulse" style={{animationDelay: '4s'}}></div>
             </div>
             
             <div className="relative z-10">
@@ -63,9 +38,7 @@ function App() {
               </div>
             </div>
           </div>
-          </div>
           <Footer />
-
         </div>
       </Router>
     </HelmetProvider>
