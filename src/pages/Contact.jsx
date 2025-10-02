@@ -69,13 +69,13 @@ const Contact = () => {
     buttons = {
       whatsapp: { 
         label: '📱 CONTACT US VIA WHATSAPP',
-        href: 'https://wa.me/6016-6704742' 
+        href: 'https://wa.me/60197335343' 
       },
       email: { 
         label: '✉️ CONTACT US VIA EMAIL',
-        href: 'mailto:commercial@qoyyglobal.com' 
+        href: 'mailto:4fource.dev@gmail.com' 
       }
-    };
+    };    
   } else {
 
     // Use CMS data directly - fully dynamic
@@ -84,12 +84,12 @@ const Contact = () => {
         // Use CMS label if available, otherwise fallback
         label: buttons.whatsapp?.label || '📱 CONTACT US VIA WHATSAPP',
         // Use CMS href if available, otherwise fallback
-        href: buttons.whatsapp?.href || 'https://wa.me/6016-6704742'
+        href: buttons.whatsapp?.href
       },
       email: {
         // Use CMS label if available, otherwise fallback
-        label: buttons.email?.label || '✉️ CONTACT US VIA EMAIL',
-        href: buttons.email?.href || 'mailto:commercial@qoyyglobal.com'
+        label: buttons.email?.label,
+        href: buttons.email?.href
       }
     };
   }
@@ -107,10 +107,14 @@ const Contact = () => {
   } else {
     // Ensure info has the expected structure with fallbacks
     info = {
-      addressLines: Array.isArray(info.addressLines) ? info.addressLines : ['B3-3A-13A Solaris Dutamas, No. 1 Jalan Dutamas 1, 50480 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur.'],
-      phone: info.phone || '+6016-670 4742',
-      email: info.email || 'commercial@qoyyglobal.com',
-      hours: Array.isArray(info.hours) ? info.hours : ['Mon-Fri: 9:00 AM - 6:00 PM', 'Sat: 10:00 AM - 4:00 PM']
+      addressLines: Array.isArray(info.addressLines) 
+                    ? info.addressLines 
+                    : [info.addressLines.replace(/^"|"$/g, '')],
+      phone: info?.phone || '+6016-670 4742',
+      email: info?.email || 'commercial@qoyyglobal.com',
+      hours: Array.isArray(info.hours) 
+              ? info.hours 
+              : [info.hours.replace(/^"|"$/g, '')]
     };
   }
 

@@ -63,20 +63,21 @@ const Home = () => {
               Innovation in Technology
             </div>
             
-            {/* Main heading */}
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 animate-slide-up">
               <span className="tech-text-gradient">
-                {hero.title1 || 'TECHNOLOGY'}
+                {seo.metaDescription}
               </span>
             </h1>
-            <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 animate-slide-up" style={{animationDelay: '0.2s'}}>
+            
+            <p className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 animate-slide-up" style={{animationDelay: '0.3s'}}>
               <span className="text-accent-800">
-                MADE SIMPLE
+                {hero.title1}
               </span>
-            </h2>
-            <h3 className="text-2xl md:text-3xl lg:text-4xl font-light text-accent-600 mb-12 animate-slide-up" style={{animationDelay: '0.4s'}}>
-              {hero.title2 || 'ALL UNDER ONE ROOF'}
-            </h3>
+            </p>
+
+            <p className="text-lg md:text-xl lg:text-2xl font-light text-accent-600 mb-12 animate-slide-up" style={{animationDelay: '0.6s'}}>
+              {hero.title2}
+            </p>
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up" style={{animationDelay: '0.6s'}}>
