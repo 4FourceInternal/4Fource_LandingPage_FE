@@ -65,8 +65,8 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-white/80 backdrop-blur-md top-0 z-50 h-20 border-b border-tech-200 shadow-sm">
-      <div className="container-custom h-full">
+    <header className="bg-white/80 backdrop-blur-md top-0 z-50 h-20 border-b border-tech-200 shadow-sm relative">
+      <div className="container-custom h-full relative">
         <div className="flex items-center justify-between h-full">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-tech-800 flex items-center hover:scale-105 transition-transform duration-300">
@@ -123,20 +123,28 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t border-tech-200 shadow-lg">
-            <div className="px-4 pt-4 pb-6 space-y-2">
-              {header?.navLinks?.filter(link => link.path !== '/').map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block px-4 py-3 rounded-lg text-base font-medium text-tech-700 hover:bg-tech-50 hover:text-tech-800 transition-colors duration-200"
-                >
-                  {link.label}
-                </Link>
-              ))}
+          <>
+            {/* Backdrop */}
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-25 z-[9998] md:hidden"
+              onClick={() => setIsMenuOpen(false)}
+            />
+            {/* Mobile Menu */}
+            <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-tech-200 shadow-lg z-[9999]">
+              <div className="px-4 pt-4 pb-6 space-y-2">
+                {header?.navLinks?.filter(link => link.path !== '/').map((link) => (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-3 rounded-lg text-base font-medium text-tech-700 hover:bg-tech-50 hover:text-tech-800 transition-colors duration-200 cursor-pointer"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </header>
