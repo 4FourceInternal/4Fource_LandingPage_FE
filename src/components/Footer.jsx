@@ -34,17 +34,16 @@ const Footer = () => {
   // Extract contact info with fallbacks
   // Handle both Strapi data structure (addressLines array) and fallback (address string)
   const contactInfo = footer?.contactInfo ? {
-    // Convert addressLines array to string, or use fallback
-    address: Array.isArray(footer.contactInfo.addressLines) 
-      ? footer.contactInfo.addressLines.join(', ')
-      : footer.contactInfo.addressLines || 'B3-3A-13A Solaris Dutamas, No. 1 Jalan Dutamas 1, 50480 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur.',
+    address: Array.isArray(footer.contactInfo.addressLines)
+      ? footer.contactInfo.addressLines.join(', ').replace(/^"|"$/g, '')
+      : (footer.contactInfo.addressLines || 'B3-3A-13A Solaris Dutamas, No. 1 Jalan Dutamas 1, 50480 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur.').replace(/^"|"$/g, ''),
     email: footer.contactInfo.email || 'commercial@qoyyglobal.com',
     phone: footer.contactInfo.phone || '+6016-670 4742'
   } : {
     address: 'B3-3A-13A Solaris Dutamas, No. 1 Jalan Dutamas 1, 50480 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur.',
     email: 'commercial@qoyyglobal.com',
     phone: '+6016-670 4742'
-  };
+  };  
 
   // Extract quick links with fallbacks
   const quickLinks = footer?.quickLinks || [
@@ -125,7 +124,7 @@ const Footer = () => {
                 alt={footer.companyName}
                 className="h-16"
               />
-              <span className="tech-text-gradient text-xl font-bold">Tech Solutions</span>
+              <span className="tech-text-gradient text-xl font-bold">Fource Technologies</span>
             </div>
             <p className="whitespace-pre-line text-sm text-center text-tech-200">
               {footer.copyright}

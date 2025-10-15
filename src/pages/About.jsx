@@ -75,6 +75,10 @@ const About = () => {
   // Get the background image from Strapi or fallback to local image
   const backgroundImage = getImageUrl(about?.teamImage) || companyWebsiteImg;
 
+  // Teams from CMS (About). Limit display to 4 for now.
+  const teamMembers = Array.isArray(about?.teams) ? about.teams : [];
+  const displayedMembers = teamMembers.slice(0, 4);
+
   return (
     <>
       <Helmet>
@@ -137,6 +141,47 @@ const About = () => {
               <div className="text-accent-600 font-medium">Client Satisfaction</div>
             </div>
           </div>
+
+        {/* Meet our Team */}
+        <section className="w-full max-w-6xl mt-20 px-4">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-tech-100 text-tech-700 text-sm font-medium mb-4">
+              <span className="w-2 h-2 bg-tech-500 rounded-full mr-2"></span>
+              Meet our Team
+            </div>
+            <h3 className="text-3xl md:text-4xl font-bold">
+              <span className="tech-text-gradient">The People Behind The Work</span>
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {(displayedMembers.length > 0 ? displayedMembers : [1,2,3,4]).map((member, idx) => {
+              const isPlaceholder = typeof member === 'number';
+              const name = isPlaceholder ? `Teammate ${member}` : (member?.Name || 'Unnamed');
+              const title = isPlaceholder ? 'Role / Title' : (member?.title || '');
+              const imgData = isPlaceholder ? null : (member?.EmployeeImage?.formats?.small || member?.EmployeeImage?.formats?.thumbnail || member?.EmployeeImage || null);
+              const imgUrl = imgData ? getImageUrl(imgData) : null;
+
+              return (
+                <div key={isPlaceholder ? `ph-${member}` : (member?.id || idx)} className="tech-card p-4 flex flex-col items-center">
+                  <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-tech-100 flex items-center justify-center mb-4 overflow-hidden">
+                    {imgUrl ? (
+                      <img src={imgUrl} alt={name} className="w-full h-full object-cover" />
+                    ) : (
+                      <svg className="w-12 h-12 text-tech-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
+                      </svg>
+                    )}
+                  </div>
+                  <div className="text-center">
+                    <div className="text-lg font-semibold text-accent-900">{name}</div>
+                    {title && <div className="text-sm text-accent-600 mt-1">{title}</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
         </div>
       </main>
     </>

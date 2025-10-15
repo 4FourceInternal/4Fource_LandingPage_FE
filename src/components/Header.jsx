@@ -90,10 +90,10 @@ const Header = () => {
           <Link to="/" className="text-2xl font-bold text-tech-800 flex items-center hover:scale-105 transition-transform duration-300">
             <img
               src={LogoCompany}
-              alt={header?.brand?.logoText || 'Qoyy Global'}
+              alt={header?.brand?.logoText || '4F'}
               className="h-12 mr-3"
             />
-            <span className="tech-text-gradient font-bold text-xl">Tech Solutions</span>
+            <span className="tech-text-gradient font-bold text-xl">Fource Technologies</span>
           </Link>
 
           {/* Desktop Navigation */}

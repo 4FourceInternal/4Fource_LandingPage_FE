@@ -113,8 +113,21 @@ export const getAboutContent = async () => {
   if (!CMS_CONFIG.ENABLE_CMS) {
     throw new Error('CMS is disabled. Please enable CMS integration.');
   }
-  
-  return await fetchContent('/about', 'about');
+
+  // Use explicit populate to include teams and EmployeeImage
+  const cacheKey = 'about';
+  const cached = getCachedData(cacheKey);
+  if (cached) return cached;
+
+  try {
+    const timestamp = Date.now();
+    const response = await cmsApi.get(`/about?populate[teams][populate][EmployeeImage]=true&_t=${timestamp}`);
+    const data = extractData(response);
+    setCachedData(cacheKey, data);
+    return data;
+  } catch (error) {
+    return handleError(new Error(`Failed to fetch About content: ${error.message}`));
+  }
 };
 
 // Services page content
