@@ -40,7 +40,7 @@ const Contact = () => {
   }
 
   // Use CMS data or fallback to local content
-  const seo = contact?.seo || { title: 'Contact Us - Qoyy Global', description: 'Reach out for projects or possibilities. Let\'s build something great together with Qoyy Global.' };
+  const seo = contact?.seo || { description: 'Reach out for projects or possibilities. Let\'s build something great together with Qoyy Global.' };
   const heading = contact?.heading || 'Reach Out For Projects Or Possibilities.';
   const subheading = contact?.subheading || 'LET\'S Build Something Great Together';
   const lead = contact?.lead || 'Whether you\'re looking for a trusted partner for your next campaign or exploring new career opportunities, we\'d love to hear from you. Drop us a message for collaborations, marketing solutions, or to join our growing team.';
@@ -171,7 +171,7 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>{seo?.metaTitle || seo?.title || 'Contact Us - Tech Solutions'}</title>
+        <title>{seo?.metaTitle || seo?.title || 'Contact Us - Fource Technologies'}</title>
         <meta name="description" content={seo?.metaDescription || seo?.description || 'Reach out for projects or possibilities. Let\'s build something great together with Tech Solutions.'} />
       </Helmet>
 

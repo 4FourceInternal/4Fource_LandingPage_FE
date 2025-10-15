@@ -40,7 +40,7 @@ const Home = () => {
   }
 
   // Use CMS data or fallback to local content
-  const seo = home?.seo || { title: 'Qoyy Global - Marketing Made Simple', description: 'Marketing made simple, all under one roof. Qoyy Global provides innovative solutions for your business.' };
+  const seo = home?.seo || { description: 'Marketing made simple, all under one roof. Qoyy Global provides innovative solutions for your business.' };
   const hero = home?.hero || { title1: 'MARKETING', title2: 'ALL UNDER ONE ROOF' };
 
   // Get the background image from Strapi or fallback to local image
@@ -49,7 +49,7 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>{seo?.metaTitle || seo?.title || 'Tech Solutions - Innovation Made Simple'}</title>
+        <title>{seo?.metaTitle || seo?.title || 'Fource Technologies'}</title>
         <meta name="description" content={seo?.metaDescription || seo?.description || 'Innovation made simple, all under one roof. Tech Solutions provides cutting-edge technology solutions for your business.'} />
       </Helmet>
 

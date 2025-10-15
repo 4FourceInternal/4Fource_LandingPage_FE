@@ -40,7 +40,7 @@ const About = () => {
   }
 
   // Use CMS data or fallback to local content
-  const seo = about?.seo || { title: 'About Us - Qoyy Global', description: 'Creative impact, measurable results. Learn about Qoyy Global\'s journey of growth built on shared successes.' };
+  const seo = about?.seo || { description: 'Creative impact, measurable results. Learn about Qoyy Global\'s journey of growth built on shared successes.' };
   const heading = about?.heading || 'CREATIVE IMPACT, MEASURABLE RESULTS.';
   
   // Handle both CMS data structure and fallback
@@ -82,7 +82,7 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>{seo?.metaTitle || seo?.title || 'About Us - Tech Solutions'}</title>
+        <title>{seo?.metaTitle || seo?.title || 'About Us - Fource Technologies'}</title>
         <meta name="description" content={seo?.metaDescription || seo?.description || 'Innovation impact, measurable results. Learn about Tech Solutions\' journey of growth built on shared successes.'} />
       </Helmet>
 

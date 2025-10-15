@@ -40,7 +40,7 @@ const Info = () => {
   }
 
   // Use CMS data or fallback to local content
-  const seo = info?.seo || { title: 'Quick Info - Qoyy Global', description: 'Answers for every question. Explore our services, process, and support for your marketing and creative needs.' };
+  const seo = info?.seo || { description: 'Answers for every question. Explore our services, process, and support for your marketing and creative needs.' };
   const heading = info?.heading || 'ANSWERS FOR EVERY QUESTION';
   const lead = info?.lead || 'Explore our services, process, and support for your marketing and creative needs.';
 
@@ -104,7 +104,7 @@ const Info = () => {
   return (
     <>
       <Helmet>
-        <title>{seo?.metaTitle || seo?.title || 'Quick Info - Tech Solutions'}</title>
+        <title>{seo?.metaTitle || seo?.title || 'Quick Info - Fource Technologies'}</title>
         <meta name="description" content={seo?.metaDescription || seo?.description || 'Answers for every question. Explore our services, process, and support for your technology needs.'} />
       </Helmet>
 

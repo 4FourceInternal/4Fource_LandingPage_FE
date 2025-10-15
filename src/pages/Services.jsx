@@ -129,13 +129,13 @@ const Services = () => {
   }
 
   // Use CMS data or fallback to local content
-  const seo = services?.seo || { title: 'Our Service - Qoyy Global', description: 'Solutions that drive brands forward. Media monitoring and public relations services that keep your brand informed, relevant, and strategically visible.' };
+  const seo = services?.seo || { description: 'Solutions that drive brands forward. Media monitoring and public relations services that keep your brand informed, relevant, and strategically visible.' };
   const heading = services?.heading || 'SOLUTIONS THAT DRIVE BRANDS FORWARD';
 
   return (
     <>
       <Helmet>
-        <title>{seo?.metaTitle || seo?.title || 'Our Services - Tech Solutions'}</title>
+        <title>{seo?.metaTitle || seo?.title || 'Our Services - Fource Technologies'}</title>
         <meta name="description" content={seo?.metaDescription || seo?.description || 'Innovation that drives businesses forward. Technology solutions that keep your business informed, relevant, and strategically competitive.'} />
       </Helmet>
 
