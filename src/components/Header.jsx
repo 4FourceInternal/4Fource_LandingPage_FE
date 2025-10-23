@@ -83,26 +83,33 @@ const Header = () => {
         />
       )}
       
-      <header className="bg-white/80 backdrop-blur-md top-0 z-[10001] h-20 border-b border-tech-200 shadow-sm relative">
+      <header className="bg-dark-900/90 backdrop-blur-md top-0 z-[10001] h-24 border-b border-matrix-green/30 shadow-sm relative cyber-scan-line">
       <div className="container-custom h-full relative">
         <div className="flex items-center justify-between h-full">
-          {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-tech-800 flex items-center hover:scale-105 transition-transform duration-300">
-            <img
-              src={LogoCompany}
-              alt={header?.brand?.logoText || '4F'}
-              className="h-12 mr-3"
-            />
-            <span className="tech-text-gradient font-bold text-xl">Fource Technologies</span>
+          {/* Logo - Left Side */}
+          <Link to="/" className="text-2xl font-bold text-matrix-green flex items-center hover:scale-105 transition-transform duration-300 group">
+            <div className="relative">
+              <img
+                src={LogoCompany}
+                alt={header?.brand?.logoText || '4F'}
+                className="h-14 mr-4 filter drop-shadow-lg"
+              />
+              <div className="absolute inset-0 bg-matrix-green/20 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+            <div className="flex flex-col">
+              <span className="cyber-text-gradient font-bold text-lg font-cyber cyber-text-glow">Fource</span>
+              <span className="cyber-text-gradient font-bold text-sm font-cyber cyber-text-glow">Technologies</span>
+            </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-2">
-            {header?.navLinks?.filter(link => link.path !== '/').map((link) => (
+          {/* Desktop Navigation - Center */}
+          <nav className="hidden md:flex space-x-1">
+            {header?.navLinks?.filter(link => link.path !== '/').map((link, index) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className="btn-secondary text-sm font-medium"
+                className="btn-ghost text-sm font-medium font-mono px-4 py-2"
+                style={{animationDelay: `${index * 0.1}s`}}
               >
                 {link.label}
               </Link>
@@ -112,7 +119,7 @@ const Header = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 text-tech-700 hover:text-tech-800 hover:bg-tech-100 rounded-lg transition-colors duration-200"
+            className="md:hidden p-2 text-matrix-green hover:text-neon-cyan hover:bg-matrix-green/10 rounded-lg transition-colors duration-200 border border-matrix-green/30"
           >
             <svg
               className="w-6 h-6"
@@ -141,14 +148,14 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden fixed top-20 left-0 right-0 bg-white border-t border-tech-200 shadow-lg z-[10000] max-h-[calc(100vh-5rem)] overflow-y-auto" style={{ pointerEvents: 'auto' }}>
+          <div className="md:hidden fixed top-20 left-0 right-0 bg-dark-900/95 backdrop-blur-md border-t border-matrix-green/30 shadow-lg z-[10000] max-h-[calc(100vh-5rem)] overflow-y-auto" style={{ pointerEvents: 'auto' }}>
             <div className="px-4 pt-4 pb-6 space-y-2">
               {header?.navLinks?.filter(link => link.path !== '/').map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMenuOpen(false)}
-                  className="block px-4 py-3 rounded-lg text-base font-medium text-tech-700 hover:bg-tech-50 hover:text-tech-800 transition-colors duration-200 cursor-pointer"
+                  className="block px-4 py-3 rounded-lg text-base font-medium text-matrix-green hover:bg-matrix-green/10 hover:text-neon-cyan transition-colors duration-200 cursor-pointer font-mono border border-matrix-green/20 hover:border-matrix-green/50"
                 >
                   {link.label}
                 </Link>

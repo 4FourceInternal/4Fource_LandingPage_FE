@@ -83,65 +83,105 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-gradient-to-r from-tech-800 to-tech-900 text-white relative z-50">
+    <footer className="bg-gradient-to-r from-dark-900 to-dark-950 text-white relative z-50 border-t border-matrix-green/30">
       <div className="container-custom section-padding">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center items-center text-center">
-          {/* Contact Information */}
-          <div className="flex flex-col items-center justify-center h-full w-full">
+        {/* Top Section - Logo and Status */}
+        <div className="flex flex-col md:flex-row items-center justify-between mb-12">
+          <div className="flex items-center space-x-4 mb-6 md:mb-0">
+            <img
+              src={LogoCompany}
+              alt={footer.companyName}
+              className="h-20 filter drop-shadow-lg"
+            />
+            <div>
+              <span className="cyber-text-gradient text-2xl font-bold font-cyber cyber-text-glow block">Fource Technologies</span>
+              <div className="flex items-center space-x-2 mt-1">
+                <span className="w-2 h-2 bg-matrix-green rounded-full animate-pulse cyber-glow"></span>
+                <span className="text-matrix-green text-sm font-mono">SYSTEM_ACTIVE</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Status Panel */}
+          <div className="cyber-card p-4">
+            <div className="flex items-center space-x-4">
+              <div className="text-center">
+                <div className="text-matrix-green font-mono text-xs">STATUS</div>
+                <div className="text-neon-cyan font-mono text-sm">ONLINE</div>
+              </div>
+              <div className="text-center">
+                <div className="text-matrix-green font-mono text-xs">UPTIME</div>
+                <div className="text-neon-cyan font-mono text-sm">99.9%</div>
+              </div>
+              <div className="text-center">
+                <div className="text-matrix-green font-mono text-xs">SECURITY</div>
+                <div className="text-neon-cyan font-mono text-sm">MAX</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Middle Section - Contact and Navigation */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+          {/* Contact Information - Left */}
+          <div className="space-y-6">
+            <h3 className="text-matrix-green font-mono text-lg font-bold">CONTACT_MATRIX</h3>
             <div className="space-y-4">
-              <div className="flex items-center space-x-3 text-tech-100">
+              <div className="flex items-start space-x-3">
                 <img
                   src={addressicon}
                   alt="Address Icon"
-                  className="w-5 h-5"
+                  className="w-5 h-5 filter drop-shadow-lg mt-1"
                 />
-                <span className="text-sm">{contactInfo.address}</span>
+                <span className="text-sm font-mono text-dark-300 leading-relaxed">{contactInfo.address}</span>
               </div>
-              <div className="flex items-center space-x-3 text-tech-100">
+              <div className="flex items-center space-x-3">
                 <img
                   src={emailicon}
                   alt="Email Icon"
-                  className="w-5 h-5"
+                  className="w-5 h-5 filter drop-shadow-lg"
                 />
-                <span className="text-sm">{contactInfo.email}</span>
+                <span className="text-sm font-mono text-matrix-green">{contactInfo.email}</span>
               </div>
-              <div className="flex items-center space-x-3 text-tech-100">
+              <div className="flex items-center space-x-3">
                 <img
                   src={phoneicon}
                   alt="Phone Icon"
-                  className="w-5 h-5"
+                  className="w-5 h-5 filter drop-shadow-lg"
                 />
-                <span className="text-sm">{contactInfo.phone}</span>
+                <span className="text-sm font-mono text-matrix-green">{contactInfo.phone}</span>
               </div>
             </div>
           </div>
 
-          {/* Logo and Copyright */}
-          <div className="flex flex-col items-center justify-center space-y-4 h-full">
-            <div className="flex items-center space-x-3">
-              <img
-                src={LogoCompany}
-                alt={footer.companyName}
-                className="h-16"
-              />
-              <span className="tech-text-gradient text-xl font-bold">Fource Technologies</span>
+          {/* Navigation Links - Right */}
+          <div className="space-y-6">
+            <h3 className="text-matrix-green font-mono text-lg font-bold">NAVIGATION_GRID</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {quickLinks.filter(link => link.path !== '/').map((link) => (
+                <Link 
+                  key={link.path}
+                  to={link.path} 
+                  className="text-matrix-green font-medium text-sm hover:text-neon-cyan hover:scale-105 transition-all duration-200 font-mono border border-matrix-green/20 px-4 py-2 rounded hover:border-matrix-green/50 text-center"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
-            <p className="whitespace-pre-line text-sm text-center text-tech-200">
+          </div>
+        </div>
+
+        {/* Bottom Section - Copyright */}
+        <div className="border-t border-matrix-green/20 pt-8">
+          <div className="text-center">
+            <p className="whitespace-pre-line text-sm text-dark-400 font-mono">
               {footer.copyright}
             </p>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="flex flex-col items-center gap-3 justify-center h-full">
-            {quickLinks.filter(link => link.path !== '/').map((link) => (
-              <Link 
-                key={link.path}
-                to={link.path} 
-                className="text-tech-200 font-medium text-sm hover:text-white hover:scale-105 transition-all duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
+            <div className="mt-4 flex justify-center space-x-8">
+              <span className="text-matrix-green font-mono text-xs">ENCRYPTED</span>
+              <span className="text-matrix-green font-mono text-xs">SECURE</span>
+              <span className="text-matrix-green font-mono text-xs">PROTECTED</span>
+            </div>
           </div>
         </div>
       </div>

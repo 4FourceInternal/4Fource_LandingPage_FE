@@ -15,14 +15,26 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-        <div className="min-h-screen w-full tech-gradient">
-          {/* Modern tech background with subtle patterns */}
+        <div className="min-h-screen w-full cyber-gradient">
+          {/* Cyberpunk background with tech patterns */}
           <div className="min-h-screen relative">
-            {/* Animated background elements */}
+            {/* Animated cyber background elements */}
             <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute -top-40 -right-40 w-80 h-80 bg-tech-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-              <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-tech-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{animationDelay: '2s'}}></div>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-tech-100 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-pulse" style={{animationDelay: '4s'}}></div>
+              {/* Matrix-style rain effect */}
+              <div className="absolute inset-0 bg-cyber-pattern"></div>
+              
+              {/* Floating cyber orbs */}
+              <div className="absolute -top-40 -right-40 w-80 h-80 bg-matrix-green/20 rounded-full filter blur-xl opacity-70 animate-float"></div>
+              <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-neon-cyan/20 rounded-full filter blur-xl opacity-70 animate-float" style={{animationDelay: '2s'}}></div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyber-500/20 rounded-full filter blur-xl opacity-50 animate-float" style={{animationDelay: '4s'}}></div>
+              
+              {/* Cyber grid overlay */}
+              <div className="absolute inset-0 cyber-grid-bg opacity-30"></div>
+              
+              {/* Scanning lines */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-matrix-green to-transparent animate-cyber-scan"></div>
+              <div className="absolute top-1/3 left-0 w-full h-1 bg-gradient-to-r from-transparent via-neon-cyan to-transparent animate-cyber-scan" style={{animationDelay: '1s'}}></div>
+              <div className="absolute top-2/3 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyber-500 to-transparent animate-cyber-scan" style={{animationDelay: '2s'}}></div>
             </div>
             
             <div className="relative z-10">
