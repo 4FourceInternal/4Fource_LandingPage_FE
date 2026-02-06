@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import useCMSData from '../hooks/useCMSData';
 import * as cmsService from '../services/cmsService';
-import LogoCompany from '../assets/CompanyLogo.jpeg';
+import LogoCompany from '../assets/CompanyLogo.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

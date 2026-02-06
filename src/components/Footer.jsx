@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import useCMSData from '../hooks/useCMSData';
 import * as cmsService from '../services/cmsService';
-import LogoCompany from '../assets/CompanyLogo.jpeg';
+import LogoCompany from '../assets/CompanyLogo.png';
 import phoneicon from '../assets/Phone.png';
 import emailicon from '../assets/Letter.png';
 import addressicon from '../assets/Address.png';
