@@ -83,86 +83,88 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-gradient-to-r from-dark-900 to-dark-950 text-white relative z-50 border-t border-matrix-green/30">
+    <footer className="relative z-40 border-t border-white/10 bg-slate-950/90 backdrop-blur-2xl">
       <div className="container-custom section-padding">
-        {/* Top Section - Logo and Status */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-12">
-          <div className="flex items-center space-x-4 mb-6 md:mb-0">
-            <img
-              src={LogoCompany}
-              alt={footer.companyName}
-              className="h-20 filter drop-shadow-lg"
-            />
-            <div>
-              <span className="cyber-text-gradient text-2xl font-bold font-cyber cyber-text-glow block">Fource Technologies</span>
-              <div className="flex items-center space-x-2 mt-1">
-                <span className="w-2 h-2 bg-matrix-green rounded-full animate-pulse cyber-glow"></span>
-                <span className="text-matrix-green text-sm font-mono">SYSTEM_ACTIVE</span>
+        {/* Top Section */}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr,1.5fr,1.5fr] gap-10 mb-10">
+          {/* Brand */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
+                <img
+                  src={LogoCompany}
+                  alt={footer.companyName}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-slate-100 uppercase tracking-[0.18em]">
+                  {footer.companyName}
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  Building modern experiences for brands and teams.
+                </p>
               </div>
             </div>
-          </div>
-          
-          {/* Status Panel */}
-          <div className="cyber-card p-4">
-            <div className="flex items-center space-x-4">
-              <div className="text-center">
-                <div className="text-matrix-green font-mono text-xs">STATUS</div>
-                <div className="text-neon-cyan font-mono text-sm">ONLINE</div>
-              </div>
-              <div className="text-center">
-                <div className="text-matrix-green font-mono text-xs">UPTIME</div>
-                <div className="text-neon-cyan font-mono text-sm">99.9%</div>
-              </div>
-              <div className="text-center">
-                <div className="text-matrix-green font-mono text-xs">SECURITY</div>
-                <div className="text-neon-cyan font-mono text-sm">MAX</div>
-              </div>
+            <div className="flex flex-wrap gap-4 text-xs text-slate-400">
+              <span className="px-3 py-1 rounded-full border border-white/10">
+                Strategy & consulting
+              </span>
+              <span className="px-3 py-1 rounded-full border border-white/10">
+                Product & web
+              </span>
+              <span className="px-3 py-1 rounded-full border border-white/10">
+                Ongoing support
+              </span>
             </div>
           </div>
-        </div>
 
-        {/* Middle Section - Contact and Navigation */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-          {/* Contact Information - Left */}
-          <div className="space-y-6">
-            <h3 className="text-matrix-green font-mono text-lg font-bold">CONTACT_MATRIX</h3>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
+          {/* Contact */}
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold text-slate-300 tracking-[0.18em] uppercase">
+              Contact
+            </h4>
+            <div className="space-y-3 text-sm text-slate-300">
+              <div className="flex items-start gap-3">
                 <img
                   src={addressicon}
                   alt="Address Icon"
-                  className="w-5 h-5 filter drop-shadow-lg mt-1"
+                  className="w-4 h-4 mt-1 opacity-80"
                 />
-                <span className="text-sm font-mono text-dark-300 leading-relaxed">{contactInfo.address}</span>
+                <span className="leading-relaxed">
+                  {contactInfo.address}
+                </span>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <img
                   src={emailicon}
                   alt="Email Icon"
-                  className="w-5 h-5 filter drop-shadow-lg"
+                  className="w-4 h-4 opacity-80"
                 />
-                <span className="text-sm font-mono text-matrix-green">{contactInfo.email}</span>
+                <span>{contactInfo.email}</span>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <img
                   src={phoneicon}
                   alt="Phone Icon"
-                  className="w-5 h-5 filter drop-shadow-lg"
+                  className="w-4 h-4 opacity-80"
                 />
-                <span className="text-sm font-mono text-matrix-green">{contactInfo.phone}</span>
+                <span>{contactInfo.phone}</span>
               </div>
             </div>
           </div>
 
-          {/* Navigation Links - Right */}
-          <div className="space-y-6">
-            <h3 className="text-matrix-green font-mono text-lg font-bold">NAVIGATION_GRID</h3>
-            <div className="grid grid-cols-2 gap-3">
+          {/* Links */}
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold text-slate-300 tracking-[0.18em] uppercase">
+              Pages
+            </h4>
+            <div className="grid grid-cols-2 gap-3 text-sm">
               {quickLinks.filter(link => link.path !== '/').map((link) => (
-                <Link 
+                <Link
                   key={link.path}
-                  to={link.path} 
-                  className="text-matrix-green font-medium text-sm hover:text-neon-cyan hover:scale-105 transition-all duration-200 font-mono border border-matrix-green/20 px-4 py-2 rounded hover:border-matrix-green/50 text-center"
+                  to={link.path}
+                  className="text-slate-300 hover:text-white transition-colors duration-150"
                 >
                   {link.label}
                 </Link>
@@ -171,17 +173,15 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Section - Copyright */}
-        <div className="border-t border-matrix-green/20 pt-8">
-          <div className="text-center">
-            <p className="whitespace-pre-line text-sm text-dark-400 font-mono">
-              {footer.copyright}
-            </p>
-            <div className="mt-4 flex justify-center space-x-8">
-              <span className="text-matrix-green font-mono text-xs">ENCRYPTED</span>
-              <span className="text-matrix-green font-mono text-xs">SECURE</span>
-              <span className="text-matrix-green font-mono text-xs">PROTECTED</span>
-            </div>
+        {/* Bottom */}
+        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <p className="whitespace-pre-line text-xs text-slate-500">
+            {footer.copyright}
+          </p>
+          <div className="flex items-center gap-3 text-[11px] text-slate-500">
+            <span>Designed for product teams</span>
+            <span className="w-1 h-1 rounded-full bg-slate-500" />
+            <span>Made in Malaysia</span>
           </div>
         </div>
       </div>

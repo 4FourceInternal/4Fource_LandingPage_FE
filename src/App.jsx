@@ -15,42 +15,27 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-        <div className="min-h-screen w-full cyber-gradient">
-          {/* Cyberpunk background with tech patterns */}
-          <div className="min-h-screen relative">
-            {/* Animated cyber background elements */}
-            <div className="absolute inset-0 overflow-hidden">
-              {/* Matrix-style rain effect */}
-              <div className="absolute inset-0 bg-cyber-pattern"></div>
-              
-              {/* Floating cyber orbs */}
-              <div className="absolute -top-40 -right-40 w-80 h-80 bg-matrix-green/20 rounded-full filter blur-xl opacity-70 animate-float"></div>
-              <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-neon-cyan/20 rounded-full filter blur-xl opacity-70 animate-float" style={{animationDelay: '2s'}}></div>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyber-500/20 rounded-full filter blur-xl opacity-50 animate-float" style={{animationDelay: '4s'}}></div>
-              
-              {/* Cyber grid overlay */}
-              <div className="absolute inset-0 cyber-grid-bg opacity-30"></div>
-              
-              {/* Scanning lines */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-matrix-green to-transparent animate-cyber-scan"></div>
-              <div className="absolute top-1/3 left-0 w-full h-1 bg-gradient-to-r from-transparent via-neon-cyan to-transparent animate-cyber-scan" style={{animationDelay: '1s'}}></div>
-              <div className="absolute top-2/3 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyber-500 to-transparent animate-cyber-scan" style={{animationDelay: '2s'}}></div>
-            </div>
-            
-            <div className="relative z-10">
-              <Header />
-              <div className="flex-grow">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/services" element={<Services />} />
-                  <Route path="/info" element={<Info />} />
-                  <Route path="/contact" element={<Contact />} />
-                </Routes>
-              </div>
-            </div>
+        <div className="min-h-screen w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+          {/* Soft tech background blobs */}
+          <div className="pointer-events-none fixed inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-32 w-80 h-80 bg-tech-500/15 rounded-full blur-3xl" />
+            <div className="absolute top-1/3 -left-32 w-72 h-72 bg-tech-400/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl" />
           </div>
-          <Footer />
+
+          <div className="relative min-h-screen flex flex-col">
+            <Header />
+            <div className="flex-1 pt-4 pb-12">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/info" element={<Info />} />
+                <Route path="/contact" element={<Contact />} />
+              </Routes>
+            </div>
+            <Footer />
+          </div>
         </div>
       </Router>
     </HelmetProvider>

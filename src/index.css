@@ -11,7 +11,7 @@
   
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    background: radial-gradient(circle at top, #020617 0%, #020617 40%, #020617 100%);
     color: #f8fafc;
     min-height: 100vh;
     position: relative;
@@ -25,10 +25,10 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: 
-      linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
     pointer-events: none;
     z-index: 1;
   }
@@ -36,11 +36,11 @@
 
 @layer components {
   .btn-cyber {
-    @apply bg-gradient-to-r from-matrix-green to-cyber-500 hover:from-cyber-500 hover:to-matrix-green text-dark-950 font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 animate-pulse-neon border border-matrix-green;
+    @apply bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-slate-950 font-bold py-3 px-7 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 border border-sky-300;
   }
   
   .btn-ghost {
-    @apply bg-transparent hover:bg-matrix-green/10 text-matrix-green font-semibold py-3 px-6 rounded-lg border-2 border-matrix-green hover:border-cyber-400 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105;
+    @apply bg-white/5 hover:bg-white/10 text-slate-100 font-medium py-3 px-6 rounded-full border border-white/10 hover:border-sky-300 transition-all duration-300 hover:-translate-y-0.5;
   }
   
   .btn-neon {
@@ -56,7 +56,7 @@
   }
   
   .cyber-card {
-    @apply bg-dark-900/80 backdrop-blur-sm border border-matrix-green/30 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden;
+    @apply bg-slate-900/80 backdrop-blur-md border border-white/10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden;
   }
 
   .cyber-card::before {
@@ -79,11 +79,11 @@
   }
   
   .cyber-text-gradient {
-    @apply bg-gradient-to-r from-matrix-green to-neon-cyan bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-sky-400 via-cyan-300 to-indigo-300 bg-clip-text text-transparent;
   }
 
   .cyber-text-glow {
-    text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41;
+    text-shadow: 0 0 22px rgba(148, 163, 184, 0.6);
   }
 
   .neon-border {
@@ -100,8 +100,8 @@
 
   .matrix-text {
     font-family: 'JetBrains Mono', monospace;
-    color: #00ff41;
-    text-shadow: 0 0 5px #00ff41;
+    color: #e5e7eb;
+    text-shadow: none;
   }
 
   .cyber-scan-line {
@@ -132,22 +132,215 @@
   
   .glass-effect {
     backdrop-filter: blur(10px);
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(0,255,65, 0.3);
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.35);
   }
 
   .cyber-glow {
-    box-shadow: 0 0 20px rgba(0,255,65,0.5), 0 0 40px rgba(0,255,65,0.3), 0 0 60px rgba(0,255,65,0.1);
+    box-shadow: 0 0 26px rgba(148, 163, 184, 0.45);
   }
 
   .text-cyber {
-    color: #00ff41;
-    text-shadow: 0 0 10px #00ff41;
+    color: #e5e7eb;
+    text-shadow: none;
   }
 
   .bg-cyber-pattern {
-    background-image: 
-      radial-gradient(circle at 25% 25%, rgba(0,255,65,0.1) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, rgba(0,255,65,0.1) 0%, transparent 50%);
+    background-image:
+      radial-gradient(circle at 25% 25%, rgba(148, 163, 184, 0.12) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(148, 163, 184, 0.1) 0%, transparent 50%);
+  }
+
+  /* ============================================
+     TEAM CARD SWITCHING ANIMATION 
+     (Like game hero reveals - retriggerable)
+     ============================================ */
+  
+  /* Team card container with 3D perspective */
+  .team-card {
+    perspective: 1200px !important;
+    height: 100%;
+    position: relative;
+    min-height: 280px;
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+
+  /* Before reveal - all cards stack at center */
+  .team-card:not(.is-revealed) {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100;
+    width: 280px !important;
+    height: 400px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Override grid positioning */
+    grid-column: unset !important;
+    grid-row: unset !important;
+  }
+
+  /* Hide the grid gap visually when stacked */
+  .team-card:not(.is-revealed)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    pointer-events: none;
+  }
+  
+  /* After reveal - card moves to grid position */
+  .team-card.is-revealed {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    z-index: auto;
+  }
+
+  /* Inner card wrapper for flip effect */
+  .team-card-inner {
+    position: relative !important;
+    width: 100% !important;
+    height: 100%;
+    min-height: 280px;
+    transition: 
+      transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.6s ease-out !important;
+    transition-delay: inherit;
+    transform-style: preserve-3d !important;
+    transform: rotateY(180deg) scale(0.95) translateY(0px) !important; /* Changed: removed Y offset, scale closer to 1 */
+    opacity: 0 !important;
+  }
+
+  /* When card is revealed */
+  .team-card.is-revealed .team-card-inner {
+    transform: rotateY(0deg) scale(1) translateY(0) !important;
+    opacity: 1 !important;
+  }
+
+  /* Front and back faces */
+  .team-card-front,
+  .team-card-back {
+    position: absolute !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 280px;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+  }
+
+  /* Back of card (shows during flip) */
+  .team-card-back {
+    transform: rotateY(180deg) !important;
+    z-index: 2 !important;
+  }
+
+  /* Front of card (shows after flip) */
+  .team-card-front {
+    transform: rotateY(0deg) !important;
+    z-index: 1 !important;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .team-card-image {
+    width: 100%;
+    height: 320px; /* Portrait card height */
+    border-radius: 12px;
+    overflow: hidden;
+    transform: scale(0.85) !important;
+    opacity: 0 !important;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .team-card.is-revealed .team-card-image {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4); /* Glowing card effect */
+  }
+
+  /* Ensure images inside are visible when parent is revealed */
+  .team-card-image img {
+    opacity: 1 !important;
+  }
+
+  .team-card-image svg {
+    opacity: 1 !important;
+  }
+
+  /* Glow effect on reveal */
+  .team-card.is-revealed .team-card-front {
+    animation: cardGlow 0.8s ease-out;
+  }
+
+  /* Optional: Add hover effect after reveal */
+  .team-card.is-revealed:hover .team-card-inner {
+    transform: rotateY(0deg) scale(1.05) translateY(-8px) !important;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  }
+
+  /* Legacy reveal classes (keeping for backwards compatibility) */
+  .reveal-card {
+    opacity: 1;
+    transform: translateY(48px) scale(0.94);
+    transition:
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal-card.is-visible {
+    transform: translateY(0) scale(1);
+  }
+
+  .reveal-image {
+    opacity: 1;
+    transform: scale(0.95);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+  }
+
+  .reveal-card.is-visible .reveal-image {
+    transform: scale(1);
+  }
+}
+
+/* Keyframe animations */
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardGlow {
+  0% {
+    filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0));
+  }
+  30% {
+    filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.8));
+  }
+  60% {
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0));
+  }
+}
+
+@keyframes cyberScan {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
   }
 }

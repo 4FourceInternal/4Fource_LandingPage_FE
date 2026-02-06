@@ -83,79 +83,90 @@ const Header = () => {
         />
       )}
       
-      <header className="bg-dark-900/90 backdrop-blur-md top-0 z-[10001] h-24 border-b border-matrix-green/30 shadow-sm relative cyber-scan-line">
-      <div className="container-custom h-full relative">
-        <div className="flex items-center justify-between h-full">
-          {/* Logo - Left Side */}
-          <Link to="/" className="text-2xl font-bold text-matrix-green flex items-center hover:scale-105 transition-transform duration-300 group">
-            <div className="relative">
-              <img
-                src={LogoCompany}
-                alt={header?.brand?.logoText || '4F'}
-                className="h-14 mr-4 filter drop-shadow-lg"
-              />
-              <div className="absolute inset-0 bg-matrix-green/20 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-            <div className="flex flex-col">
-              <span className="cyber-text-gradient font-bold text-lg font-cyber cyber-text-glow">Fource</span>
-              <span className="cyber-text-gradient font-bold text-sm font-cyber cyber-text-glow">Technologies</span>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation - Center */}
-          <nav className="hidden md:flex space-x-1">
-            {header?.navLinks?.filter(link => link.path !== '/').map((link, index) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className="btn-ghost text-sm font-medium font-mono px-4 py-2"
-                style={{animationDelay: `${index * 0.1}s`}}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 text-matrix-green hover:text-neon-cyan hover:bg-matrix-green/10 rounded-lg transition-colors duration-200 border border-matrix-green/30"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+      <header className="sticky top-0 z-[10001] h-20">
+        <div className="container-custom h-full px-4">
+          <div className="h-full rounded-2xl glass-effect flex items-center justify-between px-4 md:px-6">
+            {/* Logo - Left */}
+            <Link
+              to="/"
+              className="flex items-center gap-3 group"
             >
-              {isMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
+              <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-slate-800/80 flex items-center justify-center">
+                <img
+                  src={LogoCompany}
+                  alt={header?.brand?.logoText || '4F'}
+                  className="w-full h-full object-cover"
                 />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
+                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-slate-300 tracking-wide uppercase">
+                  {header?.brand?.logoText || 'Fource Technologies'}
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  Integrated tech & digital solutions
+                </span>
+              </div>
+            </Link>
+
+            {/* Desktop Navigation - Center */}
+            <nav className="hidden md:flex items-center gap-2">
+              {header?.navLinks?.filter(link => link.path !== '/').map((link, index) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="text-xs font-medium text-slate-200/80 hover:text-white px-4 py-2 rounded-full transition-colors duration-200"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-2 text-slate-100 hover:text-white hover:bg-white/5 rounded-lg transition-colors duration-200 border border-white/10"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {isMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden fixed top-20 left-0 right-0 bg-dark-900/95 backdrop-blur-md border-t border-matrix-green/30 shadow-lg z-[10000] max-h-[calc(100vh-5rem)] overflow-y-auto" style={{ pointerEvents: 'auto' }}>
+          <div
+            className="md:hidden fixed top-20 left-0 right-0 bg-slate-950/95 backdrop-blur-xl border-t border-white/10 shadow-2xl z-[10000] max-h-[calc(100vh-5rem)] overflow-y-auto"
+            style={{ pointerEvents: 'auto' }}
+          >
             <div className="px-4 pt-4 pb-6 space-y-2">
               {header?.navLinks?.filter(link => link.path !== '/').map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMenuOpen(false)}
-                  className="block px-4 py-3 rounded-lg text-base font-medium text-matrix-green hover:bg-matrix-green/10 hover:text-neon-cyan transition-colors duration-200 cursor-pointer font-mono border border-matrix-green/20 hover:border-matrix-green/50"
+                  className="block px-4 py-3 rounded-xl text-base font-medium text-slate-100 hover:bg-white/5 hover:text-white transition-colors duration-200 cursor-pointer"
                 >
                   {link.label}
                 </Link>
@@ -163,8 +174,7 @@ const Header = () => {
             </div>
           </div>
         )}
-      </div>
-    </header>
+      </header>
     </>
   );
 };

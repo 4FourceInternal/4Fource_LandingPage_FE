@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import useCMSData from '../hooks/useCMSData';
 import * as cmsService from '../services/cmsService';
@@ -10,8 +11,99 @@ import layerImg from '../assets/Layer.png';
 
 const About = () => {
   const { data: about, loading, error } = useCMSData('about');
+  const teamSectionRef = useRef(null);
+  const [teamVisible, setTeamVisible] = useState(false);
 
+  // Debug: Log the entire CMS data structure
+  useEffect(() => {
+    console.log('[About Debug] =========================');
+    console.log('[About Debug] CMS Data:', about);
+    console.log('[About Debug] Loading:', loading);
+    console.log('[About Debug] Error:', error);
+    if (about) {
+      console.log('[About Debug] Teams array:', about.teams);
+      console.log('[About Debug] Teams length:', about.teams?.length);
+      if (about.teams && about.teams.length > 0) {
+        console.log('[About Debug] First team member:', about.teams[0]);
+        console.log('[About Debug] First team EmployeeImage:', about.teams[0]?.EmployeeImage);
+      }
+    }
+    console.log('[About Debug] =========================');
+  }, [about, loading, error]);
 
+  // Run after content is loaded so ref is in the DOM (ref is null during loading)
+  useEffect(() => {
+    if (loading) {
+      console.log('[About reveal] Skipping observer setup: still loading');
+      return;
+    }
+    const el = teamSectionRef.current;
+    if (!el) {
+      console.warn('[About reveal] No teamSectionRef.current – observer not attached');
+      return;
+    }
+    console.log('[About reveal] Setting up IntersectionObserver on team section');
+    console.log('[About reveal] Team section element:', el);
+    
+    let timeoutId = null;
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        console.log('[About reveal] ===== Observer callback =====');
+        console.log('[About reveal] isIntersecting:', entry.isIntersecting);
+        console.log('[About reveal] intersectionRatio:', entry.intersectionRatio);
+        console.log('[About reveal] boundingClientRect:', entry.boundingClientRect);
+        console.log('[About reveal] rootBounds:', entry.rootBounds);
+        
+        if (entry.isIntersecting) {
+          // Section is in view - trigger animation
+          console.log('[About reveal] ✅ Section in view – setting teamVisible true after 100ms');
+          timeoutId = setTimeout(() => {
+            setTeamVisible(true);
+            console.log('[About reveal] ✅ teamVisible NOW SET TO TRUE');
+          }, 100);
+        } else {
+          // Section is out of view - reset animation
+          console.log('[About reveal] ❌ Section out of view – resetting teamVisible to false');
+          if (timeoutId) clearTimeout(timeoutId);
+          setTeamVisible(false);
+        }
+      },
+      { 
+        threshold: [0, 0.1, 0.2], // Multiple thresholds to catch different scroll positions
+        rootMargin: '0px 0px -150px 0px' // Trigger when 150px from bottom of viewport
+      }
+    );
+    
+    observer.observe(el);
+    console.log('[About reveal] Observer attached to element');
+    
+    // Check if element is already in view on mount
+    const rect = el.getBoundingClientRect();
+    const isInView = rect.top < window.innerHeight - 150 && rect.bottom > 0;
+    console.log('[About reveal] Initial position check:');
+    console.log('[About reveal] - Element top:', rect.top);
+    console.log('[About reveal] - Window height:', window.innerHeight);
+    console.log('[About reveal] - Is in view on mount:', isInView);
+    
+    if (isInView) {
+      console.log('[About reveal] 🚀 Element already in view, triggering animation immediately');
+      timeoutId = setTimeout(() => {
+        setTeamVisible(true);
+        console.log('[About reveal] ✅ teamVisible set to true (initial mount)');
+      }, 100);
+    }
+    
+    return () => {
+      observer.disconnect();
+      if (timeoutId) clearTimeout(timeoutId);
+      console.log('[About reveal] Observer cleaned up');
+    };
+  }, [loading]);
+
+  useEffect(() => {
+    console.log('[About reveal] 🔄 teamVisible state changed:', teamVisible);
+  }, [teamVisible]);
 
 
 
@@ -142,8 +234,8 @@ const About = () => {
             </div>
           </div>
 
-        {/* Meet our Team */}
-        <section className="w-full max-w-6xl mt-20 px-4">
+        {/* Meet our Team - scroll reveal with card-switching animation */}
+        <section ref={teamSectionRef} className="w-full max-w-6xl mt-20 px-4">
           <div className="text-center mb-10">
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-tech-100 text-tech-700 text-sm font-medium mb-4">
               <span className="w-2 h-2 bg-tech-500 rounded-full mr-2"></span>
@@ -154,33 +246,91 @@ const About = () => {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(displayedMembers.length > 0 ? displayedMembers : [1,2,3,4]).map((member, idx) => {
-              const isPlaceholder = typeof member === 'number';
-              const name = isPlaceholder ? `Teammate ${member}` : (member?.Name || 'Unnamed');
-              const title = isPlaceholder ? 'Role / Title' : (member?.title || '');
-              const imgData = isPlaceholder ? null : (member?.EmployeeImage?.formats?.small || member?.EmployeeImage?.formats?.thumbnail || member?.EmployeeImage || null);
-              const imgUrl = imgData ? getImageUrl(imgData) : null;
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+  {(displayedMembers.length > 0 ? displayedMembers : [1,2,3,4]).map((member, idx) => {
+    const isPlaceholder = typeof member === 'number';
+    const name = isPlaceholder ? `Teammate ${member}` : (member?.Name || 'Unnamed');
+    const title = isPlaceholder ? 'Role / Title' : (member?.title || '');
+    const empImg = member?.EmployeeImage;
+    const imgData = isPlaceholder ? null : (empImg?.formats?.small ?? empImg?.formats?.thumbnail ?? empImg ?? null);
+    const imgUrl = imgData ? getImageUrl(imgData) : null;
 
-              return (
-                <div key={isPlaceholder ? `ph-${member}` : (member?.id || idx)} className="tech-card p-4 flex flex-col items-center">
-                  <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-tech-100 flex items-center justify-center mb-4 overflow-hidden">
-                    {imgUrl ? (
-                      <img src={imgUrl} alt={name} className="w-full h-full object-cover" />
-                    ) : (
-                      <svg className="w-12 h-12 text-tech-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
-                      </svg>
-                    )}
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-semibold text-accent-900">{name}</div>
-                    {title && <div className="text-sm text-accent-600 mt-1">{title}</div>}
-                  </div>
-                </div>
-              );
-            })}
+    return (
+      <motion.div
+        key={isPlaceholder ? `ph-${member}` : (member?.id || idx)}
+        className="min-h-[400px]"
+        initial={false}
+        animate={teamVisible ? {
+          x: 0,
+          y: 0,
+          scale: 1,
+          opacity: 1,
+          zIndex: 1
+        } : {
+          x: 0,
+          y: 0,
+          scale: 0.95,
+          opacity: 0,
+          zIndex: 100 + (4 - idx)
+        }}
+        style={{
+          position: teamVisible ? 'relative' : 'fixed',
+          top: teamVisible ? 'auto' : '50%',
+          left: teamVisible ? 'auto' : '50%',
+          transform: teamVisible ? 'none' : 'translate(-50%, -50%)',
+          perspective: 1200,
+        }}
+        transition={{
+          delay: teamVisible ? idx * 0.6 : 0,
+          duration: 0.8,
+          ease: [0.34, 1.56, 0.64, 1]
+        }}
+      >
+        <motion.div 
+          className="w-full h-full"
+          initial={{ rotateY: 180 }}
+          animate={teamVisible ? { rotateY: 0 } : { rotateY: 180 }}
+          transition={{
+            delay: teamVisible ? idx * 0.6 : 0,
+            duration: 0.8,
+            ease: [0.34, 1.56, 0.64, 1]
+          }}
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          {/* Card back */}
+          <div className="absolute inset-0 backface-hidden" style={{ transform: 'rotateY(180deg)' }}>
+            <div className="w-full h-full min-h-[400px] bg-gradient-to-br from-tech-500 to-tech-700 rounded-2xl flex items-center justify-center">
+              <svg className="w-16 h-16 text-white opacity-20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
+              </svg>
+            </div>
           </div>
+          
+          {/* Card front */}
+          <div className="absolute inset-0 backface-hidden tech-card p-4 flex flex-col items-center min-h-[400px]">
+            <div className="w-full h-80 bg-tech-100 flex items-center justify-center mb-4 rounded-xl overflow-hidden">
+              {imgUrl ? (
+                <img 
+                  src={imgUrl} 
+                  alt={name} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <svg className="w-12 h-12 text-tech-400" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
+                </svg>
+              )}
+            </div>
+            <div className="text-center">
+              <div className="text-lg font-semibold text-accent-900">{name}</div>
+              {title && <div className="text-sm text-accent-600 mt-1">{title}</div>}
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  })}
+</div>
         </section>
         </div>
       </main>

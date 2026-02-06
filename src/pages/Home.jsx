@@ -54,129 +54,99 @@ const Home = () => {
       </Helmet>
 
       <main className="container-custom relative z-0">
-        {/* Hero Section - Asymmetric Layout */}
-        <div className="relative min-h-screen flex items-start pt-20">
-          {/* Left Side - Main Content */}
-          <div className="w-full lg:w-2/3 relative z-10">
-            {/* Cyber badge - Top Left */}
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-matrix-green/10 border border-matrix-green/30 text-matrix-green text-sm font-medium mb-8 animate-fade-in font-mono">
-              <span className="w-2 h-2 bg-matrix-green rounded-full mr-2 animate-pulse cyber-glow"></span>
-              <span className="matrix-text">SYSTEM_ONLINE</span>
-            </div>
-            
-            {/* Main Headlines - Staggered */}
-            <div className="space-y-4 mb-12">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold animate-slide-up font-cyber text-left">
-                <span className="cyber-text-gradient cyber-text-glow">
+        {/* Hero Section - Split Layout */}
+        <section className="relative min-h-[70vh] md:min-h-[78vh] flex items-center pt-10 md:pt-14">
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr,2fr] gap-10 items-center w-full">
+            {/* Left - Text & CTAs */}
+            <div className="space-y-8">
+              <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-tech-400 mr-2" />
+                Product studio • Technology partner
+              </div>
+
+              <div className="space-y-5">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-50">
+                  <span className="block mb-2 text-sm font-medium text-tech-300 uppercase tracking-[0.2em]">
+                    {hero.title1}
+                  </span>
+                  <span className="block">
+                    {hero.title2}
+                  </span>
+                </h1>
+
+                <p className="text-base md:text-lg text-slate-300 max-w-xl leading-relaxed">
                   {seo.metaDescription}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4">
+                <button className="btn-cyber">
+                  Talk to our team
+                </button>
+                <button className="btn-ghost">
+                  View capabilities
+                </button>
+                <span className="text-xs text-slate-400">
+                  No templates • Everything built around your product
                 </span>
-              </h1>
-              
-              <p className="text-3xl md:text-5xl lg:text-6xl font-bold animate-slide-up font-cyber text-left" style={{animationDelay: '0.3s'}}>
-                <span className="text-matrix-green cyber-text-glow">
-                  {hero.title1}
-                </span>
-              </p>
+              </div>
 
-              <p className="text-lg md:text-xl lg:text-2xl font-light text-dark-300 animate-slide-up font-mono text-left max-w-2xl" style={{animationDelay: '0.6s'}}>
-                {hero.title2}
-              </p>
-            </div>
-            
-            {/* CTA Buttons - Horizontal Stack */}
-            <div className="flex flex-wrap gap-4 animate-slide-up" style={{animationDelay: '0.6s'}}>
-              <button className="btn-cyber">
-                INITIALIZE
-              </button>
-              <button className="btn-ghost">
-                SCAN_SYSTEM
-              </button>
-            </div>
-          </div>
-
-          {/* Right Side - Floating Cards */}
-          <div className="hidden lg:block w-1/3 relative">
-            <div className="absolute top-20 right-0 space-y-6">
-              {/* Floating Feature Cards */}
-              <div className="cyber-card p-6 w-80 animate-float" style={{animationDelay: '0.5s'}}>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-matrix-green/20 rounded-lg flex items-center justify-center border border-matrix-green/30">
-                    <svg className="w-6 h-6 text-matrix-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-matrix-green mb-1 font-mono text-sm">SPEED_OPTIMIZED</h4>
-                    <p className="text-xs text-dark-400 font-mono">Lightning-fast cyber solutions</p>
-                  </div>
+              <div className="grid grid-cols-3 gap-6 pt-4 border-t border-white/5 max-w-xl">
+                <div>
+                  <div className="text-sm text-slate-400">Active clients</div>
+                  <div className="text-2xl font-semibold text-slate-50">10+</div>
+                </div>
+                <div>
+                  <div className="text-sm text-slate-400">Projects shipped</div>
+                  <div className="text-2xl font-semibold text-slate-50">25+</div>
+                </div>
+                <div>
+                  <div className="text-sm text-slate-400">Avg. NPS</div>
+                  <div className="text-2xl font-semibold text-slate-50">92</div>
                 </div>
               </div>
-              
-              <div className="cyber-card p-6 w-80 animate-float" style={{animationDelay: '1s'}}>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-matrix-green/20 rounded-lg flex items-center justify-center border border-matrix-green/30">
-                    <svg className="w-6 h-6 text-matrix-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+            </div>
+
+            {/* Right - Visual Card */}
+            <div className="relative">
+              <div className="cyber-card aspect-[4/3] md:aspect-[5/4] overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/70 via-slate-900/40 to-slate-900/10" />
+                <img
+                  src={backgroundImage}
+                  alt="Hero background"
+                  className="w-full h-full object-cover"
+                />
+                <div className="relative z-10 h-full flex flex-col justify-between p-5 md:p-6">
+                  <div className="flex items-center justify-between text-xs text-slate-300">
+                    <span className="px-2 py-1 rounded-full bg-slate-900/70 border border-white/10">
+                      Live workspace
+                    </span>
+                    <span className="text-slate-400">
+                      Fource Technologies
+                    </span>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-matrix-green mb-1 font-mono text-sm">SECURE_CORE</h4>
-                    <p className="text-xs text-dark-400 font-mono">Military-grade encryption</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="cyber-card p-6 w-80 animate-float" style={{animationDelay: '1.5s'}}>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-matrix-green/20 rounded-lg flex items-center justify-center border border-matrix-green/30">
-                    <svg className="w-6 h-6 text-matrix-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-matrix-green mb-1 font-mono text-sm">SCALABLE_ARCH</h4>
-                    <p className="text-xs text-dark-400 font-mono">Infinite expansion capability</p>
+
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-3 gap-3 text-xs text-slate-200">
+                      <div className="rounded-xl bg-slate-900/70 border border-white/10 p-3">
+                        <div className="text-[11px] text-slate-400 mb-1">Delivery</div>
+                        <div className="text-base font-semibold">4–6 weeks</div>
+                      </div>
+                      <div className="rounded-xl bg-slate-900/70 border border-white/10 p-3">
+                        <div className="text-[11px] text-slate-400 mb-1">Stack</div>
+                        <div className="text-base font-semibold">Web • Cloud</div>
+                      </div>
+                      <div className="rounded-xl bg-slate-900/70 border border-white/10 p-3">
+                        <div className="text-[11px] text-slate-400 mb-1">Support</div>
+                        <div className="text-base font-semibold">Ongoing</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Bottom Section - Mobile Cards */}
-        <div className="lg:hidden mt-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-slide-up" style={{animationDelay: '0.8s'}}>
-            <div className="cyber-card p-6 text-center">
-              <div className="w-12 h-12 bg-matrix-green/20 rounded-lg flex items-center justify-center mx-auto mb-4 border border-matrix-green/30">
-                <svg className="w-6 h-6 text-matrix-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h4 className="font-semibold text-matrix-green mb-2 font-mono">SPEED_OPTIMIZED</h4>
-              <p className="text-sm text-dark-400 font-mono">Lightning-fast cyber solutions</p>
-            </div>
-            
-            <div className="cyber-card p-6 text-center">
-              <div className="w-12 h-12 bg-matrix-green/20 rounded-lg flex items-center justify-center mx-auto mb-4 border border-matrix-green/30">
-                <svg className="w-6 h-6 text-matrix-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h4 className="font-semibold text-matrix-green mb-2 font-mono">SECURE_CORE</h4>
-              <p className="text-sm text-dark-400 font-mono">Military-grade encryption</p>
-            </div>
-            
-            <div className="cyber-card p-6 text-center">
-              <div className="w-12 h-12 bg-matrix-green/20 rounded-lg flex items-center justify-center mx-auto mb-4 border border-matrix-green/30">
-                <svg className="w-6 h-6 text-matrix-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
-                </svg>
-              </div>
-              <h4 className="font-semibold text-matrix-green mb-2 font-mono">SCALABLE_ARCH</h4>
-              <p className="text-sm text-dark-400 font-mono">Infinite expansion capability</p>
-            </div>
-          </div>
-        </div>
+        </section>
       </main>
     </>
   );
