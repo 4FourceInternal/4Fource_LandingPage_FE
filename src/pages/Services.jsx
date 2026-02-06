@@ -32,23 +32,56 @@ const Services = () => {
       return cards.map((card, index) => {
         let features = [];
       
+        // // If features is already an array
+        // if (Array.isArray(card.features)) {
+        //   features = card.features;
+        // } 
+        // // If it's a string (like in your API)
+        // else if (typeof card.features === 'string') {
+        //   try {
+        //     // Remove quotes/brackets and split by comma
+        //     features = card.features
+        //       .replace(/[\[\]"]+/g, '')       // remove brackets/quotes
+        //       .split(',')
+        //       .map(f => f.trim().replace(/^'|'$/g, '')) // trim spaces & stray quotes
+        //       .filter(f => f.length > 0);
+        //   } catch (err) {
+        //     console.error('Error parsing features:', err);
+        //   }
+        // }
+
         // If features is already an array
         if (Array.isArray(card.features)) {
-          features = card.features;
+          // Check if it's an array with a single string element like ["'item1', 'item2'"]
+          if (card.features.length === 1 && typeof card.features[0] === 'string') {
+            try {
+              // Parse the single string element
+              features = card.features[0]
+                .split(',')                          // Split by comma
+                .map(f => f.trim())                  // Trim whitespace
+                .map(f => f.replace(/^['"]|['"]$/g, '')) // Remove surrounding quotes
+                .filter(f => f.length > 0);          // Remove empty strings
+            } catch (err) {
+              console.error('Error parsing features array:', err);
+              features = card.features;
+            }
+          } else {
+            // Already a proper array
+            features = card.features;
+          }
         } 
-        // If it's a string (like in your API)
+        // If it's a string (fallback)
         else if (typeof card.features === 'string') {
           try {
-            // Remove quotes/brackets and split by comma
             features = card.features
-              .replace(/[\[\]"]+/g, '')       // remove brackets/quotes
               .split(',')
-              .map(f => f.trim().replace(/^'|'$/g, '')) // trim spaces & stray quotes
+              .map(f => f.trim().replace(/^['"]|['"]$/g, ''))
               .filter(f => f.length > 0);
           } catch (err) {
-            console.error('Error parsing features:', err);
+            console.error('Error parsing features string:', err);
           }
         }
+        
         return {
           title: card.title || `Service ${index + 1}`,
           description: card.description || 'Service description will appear here.',
