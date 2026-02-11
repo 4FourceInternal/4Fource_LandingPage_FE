@@ -61,7 +61,10 @@ const fetchContent = async (endpoint, cacheKey) => {
 
   // Use deep population for nested components, especially for contact buttons and global footer
   let populateParam = 'populate=*';
-  if (endpoint === '/contact') {
+
+  if (endpoint === '/home') {
+    populateParam = 'populate[hero][populate]=*';
+  } else if (endpoint === '/contact') {
     populateParam = 'populate[seo][populate]=*&populate[buttons][populate][whatsapp][populate]=*&populate[buttons][populate][email][populate]=*&populate[info][populate]=*&populate[offers][populate]=*&populate[bottomCta][populate][buttons][populate]=*';
   } else if (endpoint === '/global') {
     populateParam = 'populate[defaultSeo][populate]=*&populate[footer][populate][quickLinks][populate]=*&populate[footer][populate][contactInfo][populate]=*&populate[header][populate][brand][populate]=*&populate[header][populate][navLinks][populate]=*';

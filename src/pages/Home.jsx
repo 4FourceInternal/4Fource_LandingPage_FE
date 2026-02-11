@@ -11,13 +11,6 @@ import layerImg from '../assets/Layer.png';
 const Home = () => {
   const { data: home, loading, error } = useCMSData('home');
 
-
-
-
-
-
-
-
   // Show loading state
   if (loading) {
     return (
