@@ -8,6 +8,7 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Info from './pages/Info';
 import Contact from './pages/Contact';
+import Team from './pages/Team';
 
 import Layer from './assets/Layer.png';
 
@@ -28,6 +29,7 @@ function App() {
             <div className="flex-1 pt-4 pb-12">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/team" element={<Team />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/info" element={<Info />} />
