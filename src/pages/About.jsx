@@ -1,586 +1,828 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import useCMSData from '../hooks/useCMSData';
-import * as cmsService from '../services/cmsService';
 import { getImageUrl } from '../utils/imageUtils';
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 
-// Import background image and layer overlay
-import companyWebsiteImg from '../assets/Gambar_Company_Website.jpg';
-import layerImg from '../assets/Layer.png';
+gsap.registerPlugin(ScrollTrigger);
 
-const TeamCard = ({ member, idx, isCurrentlyRevealing, hasFullyRevealed, teamVisible }) => {
-  const gridRef = useRef(null);
-  const cardRef = useRef(null);
-  const [gridPosition, setGridPosition] = useState(null);
-  const [transitionComplete, setTransitionComplete] = useState(false);
+const COLORS = [
+  { accent: '#38bdf8', glow: 'rgba(56,189,248,0.3)',  rgb: '56,189,248'  },
+  { accent: '#818cf8', glow: 'rgba(129,140,248,0.3)', rgb: '129,140,248' },
+  { accent: '#34d399', glow: 'rgba(52,211,153,0.3)',  rgb: '52,211,153'  },
+  { accent: '#fb923c', glow: 'rgba(251,146,60,0.3)',  rgb: '251,146,60'  },
+  { accent: '#f472b6', glow: 'rgba(244,114,182,0.3)', rgb: '244,114,182' },
+  { accent: '#facc15', glow: 'rgba(250,204,21,0.3)',  rgb: '250,204,21'  },
+];
 
-  const isPlaceholder = typeof member === 'number';
-  const name = isPlaceholder ? `Teammate ${member}` : (member?.Name || 'Unnamed');
-  const title = isPlaceholder ? 'Role / Title' : (member?.title || '');
-  const empImg = member?.EmployeeImage;
-  const imgData = isPlaceholder ? null : (empImg?.formats?.small ?? empImg?.formats?.thumbnail ?? empImg ?? null);
-  const imgUrl = imgData ? getImageUrl(imgData) : null;
-
-  // Get the grid cell position when card needs to move there
-  useEffect(() => {
-    if (hasFullyRevealed && gridRef.current && !gridPosition) {
-      const rect = gridRef.current.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-      
-      setGridPosition({ 
-        x: rect.left + scrollLeft, 
-        y: rect.top + scrollTop, 
-        width: rect.width, 
-        height: rect.height 
-      });
-    }
-  }, [hasFullyRevealed, gridPosition]);
-
-  // After animation completes, switch to absolute positioning
-  useEffect(() => {
-    if (hasFullyRevealed && gridPosition) {
-      const timer = setTimeout(() => {
-        setTransitionComplete(true);
-      }, 800); // Wait for animation to complete
-      return () => clearTimeout(timer);
-    }
-  }, [hasFullyRevealed, gridPosition]);
+/* ─── Shared card renderer ── */
+const CardFace = ({ member, index, total, showOverlay = true }) => {
+  const name    = member?.Name  || 'Unnamed';
+  const title   = member?.title || '';
+  const empImg  = member?.EmployeeImage;
+  const imgData = empImg?.formats?.medium ?? empImg?.formats?.small ?? empImg?.formats?.thumbnail ?? empImg ?? null;
+  const imgUrl  = imgData ? getImageUrl(imgData) : null;
+  const { accent, glow } = COLORS[index % COLORS.length];
 
   return (
-    <React.Fragment>
-      {/* Grid placeholder - contains the final positioned card */}
-      <div ref={gridRef} className="relative w-full min-h-[400px]">
-        {/* Final card position - absolute within grid cell */}
-        {transitionComplete && (
-          <div 
-            className="absolute inset-0 w-full h-full"
-            style={{
-              perspective: '1200px',
-              transformStyle: 'preserve-3d'
-            }}
-          >
-            <div
-              className="relative w-full h-full"
-              style={{ transformStyle: 'preserve-3d' }}
-            >
-              {/* Card Back */}
-              <div 
-                className="absolute inset-0 w-full backface-hidden"
-                style={{ 
-                  backfaceVisibility: 'hidden',
-                  WebkitBackfaceVisibility: 'hidden',
-                  transform: 'rotateY(180deg)'
-                }}
-              >
-                <div className="w-full h-full bg-gradient-to-br from-tech-500 via-tech-600 to-tech-700 rounded-2xl flex items-center justify-center relative overflow-hidden shadow-2xl">
-                  <svg className="w-20 h-20 text-white opacity-30" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
-                  </svg>
-                </div>
-              </div>
-              
-              {/* Card Front */}
-              <div 
-                className="absolute inset-0 w-full backface-hidden tech-card p-4 flex flex-col items-center"
-                style={{ 
-                  backfaceVisibility: 'hidden',
-                  WebkitBackfaceVisibility: 'hidden'
-                }}
-              >
-                <div className="w-full h-80 bg-tech-100 flex items-center justify-center mb-4 rounded-xl overflow-hidden">
-                  {imgUrl ? (
-                    <img 
-                      src={imgUrl} 
-                      alt={name} 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <svg className="w-12 h-12 text-tech-400" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
-                    </svg>
-                  )}
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-semibold text-accent-900">{name}</div>
-                  {title && <div className="text-sm text-accent-600 mt-1">{title}</div>}
-                </div>
-              </div>
+    <div className="card-inner" style={{ '--accent': accent, '--glow': glow }}>
+      <div className="card-topline" />
+      <span className="cc tl" /><span className="cc tr" />
+      <span className="cc bl" /><span className="cc br" />
+
+      <div className="card-photo">
+        {imgUrl ? (
+          <img src={imgUrl} alt={name} />
+        ) : (
+          <div className="card-avatar">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
+            </svg>
+          </div>
+        )}
+        <div className="photo-grad" />
+        {showOverlay && (
+          <div className="card-overlay-info">
+            <div className="card-number-badge">
+              {String(index + 1).padStart(2, '0')}
+              <span className="card-total-badge">/{String(total).padStart(2, '0')}</span>
             </div>
+            <h3 className="member-name">{name}</h3>
+            {title && <p className="member-title">{title}</p>}
           </div>
         )}
       </div>
-
-      {/* Animating card - fixed position during animation */}
-      {teamVisible && !transitionComplete && (
-        <motion.div
-          ref={cardRef}
-          className="pointer-events-none"
-          style={{
-            position: 'fixed',
-            width: '280px',
-            height: '400px',
-            perspective: '1200px',
-            transformStyle: 'preserve-3d',
-            zIndex: isCurrentlyRevealing ? 999 : (hasFullyRevealed ? 1 : 100 - idx)
-          }}
-          initial={{
-            top: '50%',
-            left: '50%',
-            x: '-50%',
-            y: '-50%',
-            scale: 0.9,
-            opacity: 1
-          }}
-          animate={
-            hasFullyRevealed && gridPosition
-              ? {
-                  // Move to grid position (using viewport coordinates)
-                  top: gridPosition.y - (window.pageYOffset || document.documentElement.scrollTop),
-                  left: gridPosition.x - (window.pageXOffset || document.documentElement.scrollLeft),
-                  x: 0,
-                  y: 0,
-                  scale: 1,
-                  opacity: 1
-                }
-              : isCurrentlyRevealing
-              ? {
-                  // Stay at center while revealing
-                  top: '50%',
-                  left: '50%',
-                  x: '-50%',
-                  y: '-50%',
-                  scale: 1.05,
-                  opacity: 1
-                }
-              : {
-                  // Stacked at center
-                  top: '50%',
-                  left: '50%',
-                  x: '-50%',
-                  y: '-50%',
-                  scale: 0.9,
-                  opacity: 1
-                }
-          }
-          transition={{
-            type: 'spring',
-            stiffness: 100,
-            damping: 20,
-            duration: 0.6
-          }}
-        >
-          {/* Card Inner - handles the flip */}
-          <motion.div
-            className="relative w-full h-full"
-            style={{
-              transformStyle: 'preserve-3d'
-            }}
-            initial={{ rotateY: 180 }}
-            animate={{
-              rotateY: hasFullyRevealed || isCurrentlyRevealing ? 0 : 180
-            }}
-            transition={{
-              duration: 0.6,
-              ease: [0.34, 1.56, 0.64, 1],
-              delay: isCurrentlyRevealing ? 0.2 : 0
-            }}
-          >
-            {/* Card Back - shows during flip */}
-            <div 
-              className="absolute inset-0 w-full backface-hidden"
-              style={{ 
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
-                transform: 'rotateY(180deg)'
-              }}
-            >
-              <div className="w-full h-full bg-gradient-to-br from-tech-500 via-tech-600 to-tech-700 rounded-2xl flex items-center justify-center relative overflow-hidden shadow-2xl">
-                {/* Animated shine effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shine"></div>
-                <svg className="w-20 h-20 text-white opacity-30" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
-                </svg>
-              </div>
-            </div>
-            
-            {/* Card Front - shows after flip */}
-            <motion.div 
-              className="absolute inset-0 w-full backface-hidden tech-card p-4 flex flex-col items-center"
-              style={{ 
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden'
-              }}
-              animate={hasFullyRevealed ? {
-                boxShadow: [
-                  '0 0 0px rgba(59, 130, 246, 0)',
-                  '0 0 30px rgba(59, 130, 246, 0.6)',
-                  '0 0 20px rgba(59, 130, 246, 0.3)',
-                  '0 4px 20px rgba(0, 0, 0, 0.1)'
-                ]
-              } : {}}
-              transition={{
-                duration: 1.2,
-                times: [0, 0.3, 0.7, 1]
-              }}
-            >
-              <motion.div 
-                className="w-full h-80 bg-tech-100 flex items-center justify-center mb-4 rounded-xl overflow-hidden"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={(hasFullyRevealed || isCurrentlyRevealing) ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
-              >
-                {imgUrl ? (
-                  <img 
-                    src={imgUrl} 
-                    alt={name} 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <svg className="w-12 h-12 text-tech-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
-                  </svg>
-                )}
-              </motion.div>
-              <motion.div 
-                className="text-center"
-                initial={{ y: 20, opacity: 0 }}
-                animate={(hasFullyRevealed || isCurrentlyRevealing) ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
-                transition={{ delay: 0.4, duration: 0.3 }}
-              >
-                <div className="text-lg font-semibold text-accent-900">{name}</div>
-                {title && <div className="text-sm text-accent-600 mt-1">{title}</div>}
-              </motion.div>
-            </motion.div>
-          </motion.div>
-
-          {/* Particle effects on reveal */}
-          {isCurrentlyRevealing && (
-            <>
-              {[...Array(12)].map((_, i) => {
-                const angle = (i / 12) * Math.PI * 2;
-                const distance = 120;
-                return (
-                  <motion.div
-                    key={`particle-${i}`}
-                    className="absolute top-1/2 left-1/2 w-3 h-3 bg-tech-400 rounded-full"
-                    initial={{ scale: 0, opacity: 0, x: -6, y: -6 }}
-                    animate={{ 
-                      scale: [0, 1.2, 0],
-                      opacity: [0, 1, 0],
-                      x: [-6, Math.cos(angle) * distance],
-                      y: [-6, Math.sin(angle) * distance]
-                    }}
-                    transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
-                  />
-                );
-              })}
-            </>
-          )}
-        </motion.div>
-      )}
-    </React.Fragment>
+    </div>
   );
 };
 
-const About = () => {
-  const { data: about, loading, error } = useCMSData('about');
-  const teamSectionRef = useRef(null);
-  const [teamVisible, setTeamVisible] = useState(false);
-  const [revealedCards, setRevealedCards] = useState([]);
-  const [hasTriggered, setHasTriggered] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState('down');
+/* ─── Section 1: Reveal card (left panel) ── */
+const TeamCard = ({ member, index, total }) => {
+  const { accent, glow } = COLORS[index % COLORS.length];
+  return (
+    <div
+      className="team-card"
+      data-index={index}
+      style={{ '--accent': accent, '--glow': glow, zIndex: index + 1 }}
+    >
+      <CardFace member={member} index={index} total={total} showOverlay={true} />
+    </div>
+  );
+};
 
-  // Track scroll direction
+/* ─── Section 1: Detail panel (right) ── */
+const MemberDetail = ({ member, index, isActive }) => {
+  const panelRef = useRef(null);
+  const { accent, rgb } = COLORS[index % COLORS.length];
+  const rawFeatures = member?.features || '';
+  const features    = rawFeatures.replace(/^[""\u201c\u201d]|[""\u201c\u201d]$/g, '').trim();
+  const description = member?.description || '';
+  const title       = member?.title || '';
+  const name        = member?.Name || '';
+
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-      
-      if (currentScrollY > lastScrollY) {
-        setScrollDirection('down');
-      } else if (currentScrollY < lastScrollY) {
-        setScrollDirection('up');
-      }
-      
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
-
-  // Debug: Log the entire CMS data structure
-  useEffect(() => {
-    console.log('[About Debug] =========================');
-    console.log('[About Debug] CMS Data:', about);
-    console.log('[About Debug] Loading:', loading);
-    console.log('[About Debug] Error:', error);
-    if (about) {
-      console.log('[About Debug] Teams array:', about.teams);
-      console.log('[About Debug] Teams length:', about.teams?.length);
-      if (about.teams && about.teams.length > 0) {
-        console.log('[About Debug] First team member:', about.teams[0]);
-        console.log('[About Debug] First team EmployeeImage:', about.teams[0]?.EmployeeImage);
-      }
+    if (!panelRef.current) return;
+    const els = panelRef.current.querySelectorAll('.da');
+    if (isActive) {
+      gsap.killTweensOf(els);
+      gsap.fromTo(els,
+        { y: 32, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, stagger: 0.1, ease: 'power3.out', delay: 0.12 }
+      );
+    } else {
+      gsap.killTweensOf(els);
+      gsap.to(els, { y: -18, opacity: 0, duration: 0.28, stagger: 0.04, ease: 'power2.in' });
     }
-    console.log('[About Debug] =========================');
-  }, [about, loading, error]);
+  }, [isActive]);
 
-  // Track scroll direction
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-      
-      if (currentScrollY > lastScrollY.current) {
-        setScrollDirection('down');
-      } else if (currentScrollY < lastScrollY.current) {
-        setScrollDirection('up');
-      }
-      
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Card pack reveal sequence
-  useEffect(() => {
-    if (!teamVisible) {
-      setRevealedCards([]);
-      return;
-    }
-
-    // Reveal cards one by one with delay
-    const teamCount = displayedMembers?.length || 4;
-    const delays = [];
-    
-    for (let i = 0; i < teamCount; i++) {
-      const timeout = setTimeout(() => {
-        setRevealedCards(prev => [...prev, i]);
-      }, i * 1200); // 1.2s between each card reveal
-      delays.push(timeout);
-    }
-
-    return () => delays.forEach(t => clearTimeout(t));
-  }, [teamVisible]);
-
-  // Run after content is loaded so ref is in the DOM
-  useEffect(() => {
-    if (loading) {
-      console.log('[About reveal] Skipping observer setup: still loading');
-      return;
-    }
-    const el = teamSectionRef.current;
-    if (!el) {
-      console.warn('[About reveal] No teamSectionRef.current – observer not attached');
-      return;
-    }
-    console.log('[About reveal] Setting up IntersectionObserver on team section');
-    
-    let timeoutId = null;
-    
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        console.log('[About reveal] ===== Observer callback =====');
-        console.log('[About reveal] isIntersecting:', entry.isIntersecting);
-        console.log('[About reveal] boundingClientRect.top:', entry.boundingClientRect.top);
-        console.log('[About reveal] scrollDirection:', scrollDirection);
-        console.log('[About reveal] hasTriggered:', hasTriggered);
-        console.log('[About reveal] teamVisible:', teamVisible);
-        
-        const isAtTop = entry.isIntersecting && entry.boundingClientRect.top <= 100;
-        
-        if (isAtTop && scrollDirection === 'down') {
-          // Scrolling DOWN and section is at top
-          if (!teamVisible) {
-            // Trigger animation (first time OR re-trigger after scrolling up)
-            console.log('[About reveal] ✅ Triggering animation - scrolling DOWN, section at top');
-            if (timeoutId) clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-              setTeamVisible(true);
-              setHasTriggered(true);
-              console.log('[About reveal] ✅ teamVisible set to TRUE');
-            }, 100);
-          } else {
-            console.log('[About reveal] ⏭️ Already visible, scrolling DOWN past - no action');
-          }
-        } else if (!entry.isIntersecting && scrollDirection === 'up' && teamVisible) {
-          // Scrolled UP past the section - reset animation so it can retrigger
-          console.log('[About reveal] ⬆️ Scrolled UP past section - resetting for re-trigger');
-          if (timeoutId) clearTimeout(timeoutId);
-          setTeamVisible(false);
-          // Keep hasTriggered = true so we know it happened before
-        } else if (!entry.isIntersecting && scrollDirection === 'down') {
-          // Scrolled DOWN past the section - don't reset anything
-          console.log('[About reveal] ⬇️ Scrolled DOWN past section - keeping state');
-        }
-      },
-      { 
-        threshold: [0, 0.1, 0.2, 0.5, 1],
-        rootMargin: '-50px 0px 0px 0px'
-      }
-    );
-    
-    observer.observe(el);
-    console.log('[About reveal] Observer attached to element');
-    
-    return () => {
-      observer.disconnect();
-      if (timeoutId) clearTimeout(timeoutId);
-      console.log('[About reveal] Observer cleaned up');
-    };
-  }, [loading, scrollDirection, teamVisible, hasTriggered]);
-
-  // Show loading state
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white text-2xl">Loading...</div>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white text-2xl">
-          Error loading content
+  return (
+    <div
+      ref={panelRef}
+      className="detail-panel"
+      style={{
+        '--accent': accent,
+        '--rgb': rgb,
+        opacity: isActive ? 1 : 0,
+        pointerEvents: isActive ? 'auto' : 'none',
+      }}
+    >
+      {title && (
+        <div className="da d-badge">
+          <span className="d-badge-dot" />
+          {title}
         </div>
+      )}
+      <h2 className="da d-name">{name}</h2>
+      <div className="da d-rule" />
+      {description && (
+        <div className="da d-field">
+          <span className="d-field-label">Full Name</span>
+          <span className="d-field-value">{description}</span>
+        </div>
+      )}
+      {features && (
+        <div className="da d-quote-block">
+          <div className="d-quote-mark">"</div>
+          <p className="d-quote-text">{features}</p>
+        </div>
+      )}
+      <div className="d-ghost-num" aria-hidden="true">
+        {String(index + 1).padStart(2, '0')}
       </div>
-    );
-  }
+    </div>
+  );
+};
 
-  // Use CMS data or fallback to local content
-  const seo = about?.seo || { description: 'Creative impact, measurable results. Learn about Qoyy Global\'s journey of growth built on shared successes.' };
-  const heading = about?.heading || 'CREATIVE IMPACT, MEASURABLE RESULTS.';
-  
-  // Handle both CMS data structure and fallback
-  let paragraphText;
-  if (about?.paragraphs && typeof about.paragraphs === 'string') {
-    paragraphText = about.paragraphs;
-  } else if (about?.paragraphs && Array.isArray(about.paragraphs) && about.paragraphs.length > 0) {
-    paragraphText = about.paragraphs[0];
-  } else if (about?.paragraphs && typeof about.paragraphs === 'object') {
-    try {
-      const p = about.paragraphs;
-      if (p.establishment_year && p.location && p.agency_type && p.solutions && p.team_size && p.client_portfolio) {
-        paragraphText = `Established in ${p.establishment_year} and based in ${p.location}, we are an ${p.agency_type.toLowerCase()} delivering end-to-end solutions across ${p.solutions.join(', ').toLowerCase()}. With a growing team of ${p.team_size} passionate professionals, we proudly serve over ${p.client_portfolio.retained_government_clients} retained government clients and ${p.client_portfolio.corporate_brands} corporate brands.`;
-      } else {
-        paragraphText = about.paragraphs[0] || 'Established in 2018 and based in Kuala Lumpur, we are an integrated marketing agency delivering end-to-end solutions across digital, creative, media, events, and print. With a growing team of 15 passionate professionals, we proudly serve over 20 retained government clients and 10 corporate brands.';
+/* ─── Stat ── */
+const Stat = ({ value, label }) => (
+  <div className="stat-item">
+    <div className="stat-value">{value}</div>
+    <div className="stat-label">{label}</div>
+  </div>
+);
+
+/* ─── About ── */
+const About = () => {
+  const mainRef        = useRef(null);
+  const headerRef      = useRef(null);
+  const paragraphRef   = useRef(null);
+  const quoteRef       = useRef(null);
+  const statsRef       = useRef(null);
+  const teamWrapRef    = useRef(null);   // section 1 pin
+  const lineupWrapRef  = useRef(null);   // section 2 pin
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const { data: about, loading, error } = useCMSData('about');
+
+  /* ── Section reveals ── */
+  useEffect(() => {
+    if (loading) return;
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.from(headerRef.current.children, {
+          y: 80, opacity: 0, duration: 1.2, stagger: 0.15, ease: 'power4.out',
+        });
       }
-    } catch (error) {
-      console.warn('Error processing complex paragraph structure:', error);
-      paragraphText = about.paragraphs[0] || 'Established in 2018 and based in Kuala Lumpur, we are an integrated marketing agency delivering end-to-end solutions across digital, creative, media, events, and print. With a growing team of 15 passionate professionals, we proudly serve over 20 retained government clients and 10 corporate brands.';
-    }
-  } else {
-    paragraphText = 'Established in 2018 and based in Kuala Lumpur, we are an integrated marketing agency delivering end-to-end solutions across digital, creative, media, events, and print. With a growing team of 15 passionate professionals, we proudly serve over 20 retained government clients and 10 corporate brands.';
-  }
-  
-  const quote = about?.quote || '"OUR JOURNEY OF GROWTH IS BUILT ON SHARED SUCCESSES WITH THOSE WE SERVE."';
-  const backgroundImage = getImageUrl(about?.teamImage) || companyWebsiteImg;
+      [paragraphRef, quoteRef].forEach(r => {
+        if (!r.current) return;
+        gsap.from(r.current, {
+          scrollTrigger: { trigger: r.current, start: 'top 82%', toggleActions: 'play reverse play reverse' },
+          y: 60, opacity: 0, duration: 1, ease: 'power3.out',
+        });
+      });
+      if (statsRef.current) {
+        gsap.from(statsRef.current.children, {
+          scrollTrigger: { trigger: statsRef.current, start: 'top 82%', toggleActions: 'play reverse play reverse' },
+          y: 50, opacity: 0, stagger: 0.12, duration: 0.9, ease: 'power3.out',
+        });
+      }
+    }, mainRef);
+    return () => ctx.revert();
+  }, [loading]);
 
-  const teamMembers = Array.isArray(about?.teams) ? about.teams : [];
-  const displayedMembers = teamMembers.slice(0, 4);
+  /* ── Section 1: cards reveal one by one ── */
+  useEffect(() => {
+    if (loading) return;
+    const cards = gsap.utils.toArray('.team-card');
+    if (!cards.length || !teamWrapRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.set(cards[0], { yPercent: 0, opacity: 1, scale: 1 });
+      cards.forEach((c, i) => {
+        if (i > 0) gsap.set(c, { yPercent: 108, opacity: 0, scale: 0.96 });
+      });
+      setActiveIndex(0);
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: teamWrapRef.current,
+          start: 'top top',
+          end: `+=${cards.length * 650}`,
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          onUpdate(self) {
+            const step = Math.min(Math.floor(self.progress * cards.length), cards.length - 1);
+            setActiveIndex(step);
+          },
+        },
+      });
+
+      cards.forEach((card, i) => {
+        if (i === cards.length - 1) return;
+        tl.to(card,        { yPercent: -108, opacity: 0, scale: 0.94, duration: 1, ease: 'power2.inOut' }, i);
+        tl.to(cards[i+1], { yPercent: 0,    opacity: 1, scale: 1,    duration: 1, ease: 'power2.inOut' }, i);
+      });
+    }, mainRef);
+
+    return () => ctx.revert();
+  }, [loading]);
+
+  /* ── Section 2: lineup slide-in ── */
+  useEffect(() => {
+    if (loading) return;
+    const lineupCards = gsap.utils.toArray('.lineup-card');
+    if (!lineupCards.length || !lineupWrapRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const total = lineupCards.length;
+
+      // All cards start far off to the right, invisible
+      gsap.set(lineupCards, { xPercent: 160, opacity: 0, scale: 0.85 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: lineupWrapRef.current,
+          start: 'top top',
+          end: `+=${total * 600}`,
+          pin: true,
+          scrub: 1.2,
+          anticipatePin: 1,
+        },
+      });
+
+      // Each card flies in from right and lands in its column position
+      lineupCards.forEach((card, i) => {
+        tl.to(card, {
+          xPercent: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          ease: 'power3.out',
+        }, i * 0.8); // slight overlap so it feels fluid
+      });
+
+    }, mainRef);
+
+    return () => ctx.revert();
+  }, [loading]);
+
+  /* ── Guards ── */
+  if (loading) return (
+    <div className="about-loading"><div className="loading-spinner" /><span>Loading…</span></div>
+  );
+  if (error) return (
+    <div className="about-loading"><span>Error loading content</span></div>
+  );
+
+  const seo     = about?.seo || {};
+  const heading = about?.heading || 'CREATIVE IMPACT, MEASURABLE RESULTS.';
+  const quote   = about?.quote   || '"OUR JOURNEY OF GROWTH IS BUILT ON SHARED SUCCESSES WITH THOSE WE SERVE."';
+
+  let paragraphText = '"Fource" is a blend of \'force\' and \'source\' — representing the power behind innovation and the source of intelligent solutions.';
+  if (about?.paragraphs) {
+    if (typeof about.paragraphs === 'string') paragraphText = about.paragraphs;
+    else if (Array.isArray(about.paragraphs) && about.paragraphs.length) paragraphText = about.paragraphs[0];
+  }
+
+  const teamMembers    = Array.isArray(about?.teams) ? about.teams : [];
+  const displayMembers = teamMembers.slice(0, 6);
 
   return (
     <>
       <Helmet>
-        <title>{seo?.metaTitle || seo?.title || 'About Us - Fource Technologies'}</title>
-        <meta name="description" content={seo?.metaDescription || seo?.description || 'Innovation impact, measurable results. Learn about Tech Solutions\' journey of growth built on shared successes.'} />
+        <title>{seo?.metaTitle || seo?.title || 'About Us'}</title>
+        <meta name="description" content={seo?.metaDescription || seo?.description || ''} />
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+          *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+          .about-loading {
+            min-height:100vh; display:flex; flex-direction:column;
+            align-items:center; justify-content:center; gap:1rem;
+            font-family:'DM Mono',monospace; color:#94a3b8;
+          }
+          .loading-spinner {
+            width:36px; height:36px;
+            border:2px solid rgba(148,163,184,0.15);
+            border-top-color:#38bdf8; border-radius:50%;
+            animation:spin .8s linear infinite;
+          }
+          @keyframes spin { to { transform:rotate(360deg); } }
+
+          .about-page { font-family:'Syne',sans-serif; color:#f0f4ff; }
+
+          /* Badge */
+          .about-badge {
+            display:inline-flex; align-items:center; gap:.5rem;
+            padding:.4rem 1rem;
+            border:1px solid rgba(56,189,248,.25); border-radius:999px;
+            font-size:.68rem; letter-spacing:.2em; text-transform:uppercase;
+            color:#38bdf8; background:rgba(56,189,248,.06); margin-bottom:2rem;
+          }
+          .about-badge-dot {
+            width:5px; height:5px; background:#38bdf8; border-radius:50%;
+            animation:blink 2s ease-in-out infinite;
+          }
+          @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+          /* Header */
+          .about-header { text-align:center; padding:8rem 2rem 5rem; }
+          .about-headline {
+            font-size:clamp(2.2rem,5.5vw,4.5rem); font-weight:800;
+            line-height:1.04; letter-spacing:-.03em;
+            background:linear-gradient(130deg,#f0f4ff 0%,#38bdf8 45%,#818cf8 100%);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+            max-width:860px; margin:0 auto;
+          }
+
+          /* Content */
+          .about-content {
+            max-width:1100px; margin:0 auto;
+            padding:0 2.5rem 5rem;
+            display:flex; flex-direction:column; gap:2rem;
+          }
+          .glass-panel {
+            background:rgba(15,23,42,.65);
+            border:1px solid rgba(148,163,184,.1);
+            border-radius:1.5rem; padding:3rem;
+            backdrop-filter:blur(20px);
+            position:relative; overflow:hidden;
+          }
+          .glass-panel::after {
+            content:''; position:absolute;
+            top:0; left:0; right:0; height:1px;
+            background:linear-gradient(90deg,transparent,rgba(56,189,248,.3),transparent);
+          }
+          .paragraph-text {
+            font-family:'DM Mono',monospace;
+            font-size:1rem; line-height:2; color:#94a3b8; text-align:center;
+            max-width:720px; margin:0 auto;
+          }
+          .quote-panel { border-color:rgba(56,189,248,.15); }
+          .quote-inner { display:flex; align-items:flex-start; gap:2rem; }
+          .quote-icon-wrap {
+            flex-shrink:0; margin-top:.25rem;
+            width:40px; height:40px;
+            background:rgba(56,189,248,.08); border:1px solid rgba(56,189,248,.2);
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+          }
+          .quote-icon-wrap svg { width:16px; height:16px; color:#38bdf8; fill:currentColor; }
+          .quote-text {
+            font-size:clamp(1.05rem,2.2vw,1.45rem); font-weight:700;
+            letter-spacing:-.01em; line-height:1.5; color:#e2e8f0;
+          }
+          .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }
+          @media(max-width:560px){ .stats-row { grid-template-columns:1fr; } }
+          .stat-item {
+            background:rgba(15,23,42,.65);
+            border:1px solid rgba(148,163,184,.1);
+            border-radius:1.25rem; padding:2.25rem 1.5rem; text-align:center;
+            backdrop-filter:blur(14px);
+            transition:border-color .3s, transform .3s;
+          }
+          .stat-item:hover { border-color:rgba(56,189,248,.3); transform:translateY(-5px); }
+          .stat-value {
+            font-size:2.75rem; font-weight:800; line-height:1;
+            background:linear-gradient(135deg,#38bdf8,#818cf8);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+          }
+          .stat-label {
+            font-family:'DM Mono',monospace;
+            font-size:.7rem; letter-spacing:.12em; color:#475569;
+            margin-top:.6rem; text-transform:uppercase;
+          }
+
+          /* ════════════════════════════════
+             SECTION 1 — one-by-one reveal
+          ════════════════════════════════ */
+          .team-section-header { text-align:center; padding:5rem 2rem 3rem; }
+          .team-headline {
+            font-size:clamp(1.8rem,4vw,3rem); font-weight:800; letter-spacing:-.025em;
+            background:linear-gradient(135deg,#f0f4ff,#818cf8);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+            margin-top:1rem;
+          }
+          .team-sub {
+            font-family:'DM Mono',monospace;
+            font-size:.75rem; color:#334155; margin-top:.75rem; letter-spacing:.1em;
+          }
+
+          .scroll-hint {
+            display:flex; flex-direction:column; align-items:center; gap:.5rem;
+            padding:0 0 2.5rem;
+            font-family:'DM Mono',monospace;
+            font-size:.68rem; letter-spacing:.14em; color:#1e293b; text-transform:uppercase;
+          }
+          .scroll-arrow {
+            width:1px; height:36px;
+            background:linear-gradient(to bottom,#38bdf8,transparent);
+            animation:scrollLine 1.6s ease-in-out infinite;
+          }
+          @keyframes scrollLine {
+            0%  { transform:scaleY(0); transform-origin:top; }
+            50% { transform:scaleY(1); transform-origin:top; }
+            51% { transform:scaleY(1); transform-origin:bottom; }
+            100%{ transform:scaleY(0); transform-origin:bottom; }
+          }
+
+          .team-pin-wrap { position:relative; }
+          .team-stage {
+            width:100%; height:100vh;
+            display:flex; align-items:center; justify-content:center;
+            position:relative;
+          }
+          .team-inner {
+            display:grid;
+            grid-template-columns: 420px 1fr;
+            width:100%; max-width:1100px;
+            height:580px;
+            padding:0 2.5rem;
+            gap:0;
+            align-items:stretch;
+          }
+          .cards-col { position:relative; }
+
+          /* Shared card shell */
+          .team-card {
+            position:absolute; inset:0;
+            will-change:transform, opacity;
+          }
+          .card-inner {
+            width:100%; height:100%;
+            background:#080f20;
+            border:1px solid rgba(255,255,255,.05);
+            border-radius:1.75rem;
+            position:relative; overflow:hidden;
+            box-shadow:
+              0 0 0 1px rgba(255,255,255,.03),
+              0 0 50px var(--glow),
+              0 30px 80px rgba(0,0,0,.7);
+          }
+          .card-topline {
+            position:absolute; top:0; left:0; right:0; height:1px; z-index:2;
+            background:linear-gradient(90deg,transparent,var(--accent),transparent);
+          }
+          .cc {
+            position:absolute; width:18px; height:18px;
+            border-color:var(--accent); border-style:solid; opacity:.5; z-index:2;
+          }
+          .cc.tl{top:14px;left:14px;border-width:2px 0 0 2px;border-radius:4px 0 0 0;}
+          .cc.tr{top:14px;right:14px;border-width:2px 2px 0 0;border-radius:0 4px 0 0;}
+          .cc.bl{bottom:14px;left:14px;border-width:0 0 2px 2px;border-radius:0 0 0 4px;}
+          .cc.br{bottom:14px;right:14px;border-width:0 2px 2px 0;border-radius:0 0 4px 0;}
+          .card-photo { position:absolute; inset:0; background:#0f172a; }
+          .card-photo img {
+            width:100%; height:100%;
+            object-fit:cover; object-position:top center; display:block;
+          }
+          .card-avatar {
+            width:100%; height:100%;
+            display:flex; align-items:center; justify-content:center; background:#0f172a;
+          }
+          .card-avatar svg { width:80px; height:80px; color:#1e293b; }
+          .photo-grad {
+            position:absolute; inset:0;
+            background:linear-gradient(
+              to top,
+              rgba(8,15,32,1) 0%,
+              rgba(8,15,32,.7) 25%,
+              rgba(8,15,32,.1) 55%,
+              transparent 100%
+            );
+          }
+          .card-overlay-info {
+            position:absolute; bottom:0; left:0; right:0;
+            padding:1.75rem 2rem 2rem; z-index:2;
+          }
+          .card-number-badge {
+            font-family:'DM Mono',monospace;
+            font-size:.65rem; letter-spacing:.15em;
+            color:var(--accent); margin-bottom:.75rem; opacity:.8;
+          }
+          .card-total-badge { color:#334155; }
+          .member-name {
+            font-size:1.35rem; font-weight:800; letter-spacing:-.01em;
+            color:#f0f4ff; line-height:1.1; margin-bottom:.4rem;
+          }
+          .member-title {
+            font-family:'DM Mono',monospace;
+            font-size:.7rem; color:var(--accent); letter-spacing:.1em;
+          }
+
+          /* Detail panel */
+          .detail-col {
+            position:relative;
+            border-left:1px solid rgba(148,163,184,.07);
+            overflow:hidden;
+          }
+          .detail-panel {
+            position:absolute; inset:0;
+            display:flex; flex-direction:column; justify-content:center;
+            padding:2.5rem 3rem;
+            transition:opacity .15s;
+          }
+          .d-badge {
+            display:inline-flex; align-items:center; gap:.5rem;
+            padding:.35rem 1rem;
+            border:1px solid rgba(var(--rgb),.25); border-radius:999px;
+            font-family:'DM Mono',monospace;
+            font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;
+            color:var(--accent); background:rgba(var(--rgb),.06);
+            margin-bottom:2rem; width:fit-content;
+          }
+          .d-badge-dot {
+            width:5px; height:5px; border-radius:50%; background:var(--accent);
+            animation:blink 2s ease-in-out infinite;
+          }
+          .d-name {
+            font-size:clamp(1.6rem,3vw,3rem); font-weight:800;
+            letter-spacing:-.03em; line-height:.95; color:#f0f4ff;
+            margin-bottom:2rem; word-break:break-word; overflow-wrap:break-word;
+          }
+          .d-rule {
+            width:60px; height:2px;
+            background:linear-gradient(90deg,var(--accent),transparent);
+            border-radius:2px; margin-bottom:2rem;
+          }
+          .d-field { margin-bottom:2rem; }
+          .d-field-label {
+            display:block; font-family:'DM Mono',monospace;
+            font-size:.58rem; letter-spacing:.25em; text-transform:uppercase;
+            color:#334155; margin-bottom:.5rem;
+          }
+          .d-field-value {
+            font-size:1.1rem; font-weight:600;
+            color:#94a3b8; letter-spacing:.01em; line-height:1.3;
+          }
+          .d-quote-block { display:flex; flex-direction:column; gap:.75rem; }
+          .d-quote-mark {
+            font-size:4rem; line-height:.6;
+            color:var(--accent); opacity:.25;
+            font-family:Georgia,serif;
+          }
+          .d-quote-text {
+            font-family:'DM Mono',monospace;
+            font-size:.9rem; line-height:1.8;
+            color:#475569; font-style:italic; letter-spacing:.02em;
+          }
+          .d-ghost-num {
+            position:absolute; bottom:-2rem; right:2.5rem;
+            font-size:10rem; font-weight:800; line-height:1;
+            color:rgba(var(--rgb),.05);
+            letter-spacing:-.06em; user-select:none; pointer-events:none;
+          }
+
+          /* Progress strip */
+          .progress-strip {
+            position:absolute; bottom:2.5rem; left:50%;
+            transform:translateX(-50%);
+            display:flex; align-items:center; gap:.75rem;
+          }
+          .pdot {
+            width:5px; height:5px; border-radius:50%;
+            background:#1e293b; border:1px solid #1e293b;
+            transition:all .4s cubic-bezier(.34,1.56,.64,1);
+          }
+          .pdot.active { width:20px; border-radius:3px; }
+
+          /* ════════════════════════════════
+             SECTION 2 — lineup assembly
+          ════════════════════════════════ */
+          .lineup-section-header {
+            text-align:center; padding:5rem 2rem 3rem;
+          }
+          .lineup-pin-wrap { position:relative; overflow:hidden; }
+          .lineup-stage {
+            width:100%; height:100vh;
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            position:relative;
+            padding:0 2.5rem;
+          }
+
+          /* The row that holds all mini cards side by side */
+          .lineup-row {
+            display:flex;
+            gap:1.25rem;
+            align-items:flex-end;
+            justify-content:center;
+            width:100%;
+            max-width:1200px;
+          }
+
+          /* Each lineup card slot */
+          .lineup-card {
+            flex:1;
+            min-width:0;
+            max-width:220px;
+            aspect-ratio: 2/3;
+            will-change:transform, opacity;
+            position:relative;
+            border-radius:1.25rem;
+            overflow:hidden;
+            background:#080f20;
+            box-shadow:
+              0 0 0 1px rgba(255,255,255,.04),
+              0 0 30px var(--glow),
+              0 20px 50px rgba(0,0,0,.65);
+            flex-shrink:0;
+          }
+
+          /* Shimmer top */
+          .lineup-card::before {
+            content:''; position:absolute;
+            top:0; left:0; right:0; height:1px; z-index:2;
+            background:linear-gradient(90deg,transparent,var(--accent),transparent);
+          }
+
+          .lineup-card img {
+            width:100%; height:100%;
+            object-fit:cover; object-position:top center; display:block;
+          }
+          .lineup-card .card-avatar {
+            width:100%; height:100%;
+            display:flex; align-items:center; justify-content:center; background:#0f172a;
+          }
+          .lineup-card .card-avatar svg { width:48px; height:48px; color:#1e293b; }
+
+          /* Gradient + info overlay */
+          .lineup-overlay {
+            position:absolute; inset:0; z-index:1;
+            background:linear-gradient(
+              to top,
+              rgba(8,15,32,1) 0%,
+              rgba(8,15,32,.75) 30%,
+              rgba(8,15,32,.05) 60%,
+              transparent 100%
+            );
+            display:flex; flex-direction:column; justify-content:flex-end;
+            padding:1rem 1rem 1.25rem;
+          }
+          .lineup-name {
+            font-size:.85rem; font-weight:800;
+            color:#f0f4ff; line-height:1.1; margin-bottom:.3rem;
+          }
+          .lineup-title {
+            font-family:'DM Mono',monospace;
+            font-size:.6rem; letter-spacing:.1em;
+            color:var(--accent); line-height:1.3;
+          }
+
+          /* "Full Team" label above the row */
+          .lineup-label {
+            font-family:'DM Mono',monospace;
+            font-size:.65rem; letter-spacing:.2em; text-transform:uppercase;
+            color:#334155; margin-bottom:1.75rem;
+            display:flex; align-items:center; gap:.75rem;
+          }
+          .lineup-label::before,
+          .lineup-label::after {
+            content:''; flex:1; height:1px;
+            background:linear-gradient(90deg,transparent,#1e293b);
+          }
+          .lineup-label::after {
+            background:linear-gradient(90deg,#1e293b,transparent);
+          }
+        `}</style>
       </Helmet>
 
-      <main className="container-custom relative z-0 min-h-screen flex flex-col">
-        {/* Header Section */}
-        <div className="text-center py-16">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-tech-100 text-tech-700 text-sm font-medium mb-6">
-            <span className="w-2 h-2 bg-tech-500 rounded-full mr-2"></span>
+      <main ref={mainRef} className="about-page">
+
+        {/* ── Header ── */}
+        <div ref={headerRef} className="about-header">
+          <div className="about-badge">
+            <span className="about-badge-dot" />
             About Our Company
           </div>
-          
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
-            <span className="tech-text-gradient">
-              {heading}
-            </span>
-          </h2>
+          <h1 className="about-headline">{heading}</h1>
         </div>
 
-        {/* Content Section */}
-        <div className="flex-grow flex flex-col justify-center items-center px-4 py-16">
-          {/* Description paragraph */}
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="tech-card p-8">
-              <p className="text-accent-700 text-lg md:text-xl text-center leading-relaxed font-normal">
-                {paragraphText}
-              </p>
-            </div>
+        {/* ── Content ── */}
+        <div className="about-content">
+          <div ref={paragraphRef} className="glass-panel">
+            <p className="paragraph-text">{paragraphText}</p>
           </div>
-
-          {/* Quote section */}
-          <div className="max-w-5xl mx-auto">
-            <div className="tech-card p-8 text-center">
-              <div className="w-16 h-16 bg-tech-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-tech-600" fill="currentColor" viewBox="0 0 24 24">
+          <div ref={quoteRef} className="glass-panel quote-panel">
+            <div className="quote-inner">
+              <div className="quote-icon-wrap">
+                <svg viewBox="0 0 24 24">
                   <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
                 </svg>
               </div>
-              <p className="text-accent-800 text-xl md:text-2xl font-bold leading-relaxed">
-                {quote}
-              </p>
+              <p className="quote-text">{quote}</p>
             </div>
           </div>
-          
-          {/* Tech stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 w-full max-w-4xl">
-            <div className="tech-card p-6 text-center">
-              <div className="text-3xl font-bold text-tech-600 mb-2">2+</div>
-              <div className="text-accent-600 font-medium">Years Experience</div>
-            </div>
-            <div className="tech-card p-6 text-center">
-              <div className="text-3xl font-bold text-tech-600 mb-2">1</div>
-              <div className="text-accent-600 font-medium">Projects Completed</div>
-            </div>
-            <div className="tech-card p-6 text-center">
-              <div className="text-3xl font-bold text-tech-600 mb-2">100%</div>
-              <div className="text-accent-600 font-medium">Client Satisfaction</div>
-            </div>
+          <div ref={statsRef} className="stats-row">
+            <Stat value="2+"   label="Years Experience"    />
+            <Stat value="20+"  label="Projects Completed"  />
+            <Stat value="100%" label="Client Satisfaction" />
           </div>
-
-          {/* Meet our Team - Card Pack Opening Animation */}
-          <section ref={teamSectionRef} className="w-full max-w-6xl mt-20 px-4">
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-tech-100 text-tech-700 text-sm font-medium mb-4">
-                <span className="w-2 h-2 bg-tech-500 rounded-full mr-2"></span>
-                Meet our Team
-              </div>
-              <h3 className="text-3xl md:text-4xl font-bold">
-                <span className="tech-text-gradient">The People Behind The Work</span>
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative min-h-[450px]">
-              {(displayedMembers.length > 0 ? displayedMembers : [1,2,3,4]).map((member, idx) => {
-                const isCurrentlyRevealing = revealedCards.length === idx;
-                const hasFullyRevealed = revealedCards.includes(idx);
-                const isPlaceholder = typeof member === 'number';
-                
-                return (
-                  <TeamCard
-                    key={isPlaceholder ? `ph-${member}` : (member?.id || idx)}
-                    member={member}
-                    idx={idx}
-                    isCurrentlyRevealing={isCurrentlyRevealing}
-                    hasFullyRevealed={hasFullyRevealed}
-                    teamVisible={teamVisible}
-                  />
-                );
-              })}
-            </div>
-          </section>
         </div>
+
+        {/* ════════════════════════════════
+            SECTION 1 — one-by-one reveal
+        ════════════════════════════════ */}
+        {displayMembers.length > 0 && (
+          <>
+            <div className="team-section-header">
+              <div className="about-badge" style={{ borderColor:'rgba(129,140,248,.25)', color:'#818cf8', background:'rgba(129,140,248,.06)' }}>
+                <span className="about-badge-dot" style={{ background:'#818cf8' }} />
+                Meet the Team
+              </div>
+              <h2 className="team-headline">The People Behind The Work</h2>
+              <p className="team-sub">Scroll to meet everyone</p>
+            </div>
+
+            <div className="scroll-hint">
+              <span>Scroll</span>
+              <div className="scroll-arrow" />
+            </div>
+
+            <div ref={teamWrapRef} className="team-pin-wrap">
+              <div className="team-stage">
+                <div className="team-inner">
+                  <div className="cards-col">
+                    {displayMembers.map((member, idx) => (
+                      <TeamCard key={member?.id || idx} member={member} index={idx} total={displayMembers.length} />
+                    ))}
+                  </div>
+                  <div className="detail-col">
+                    {displayMembers.map((member, idx) => (
+                      <MemberDetail key={member?.id || idx} member={member} index={idx} isActive={activeIndex === idx} />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="progress-strip">
+                  {displayMembers.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`pdot${activeIndex === i ? ' active' : ''}`}
+                      style={activeIndex === i ? {
+                        background: COLORS[i % COLORS.length].accent,
+                        borderColor: COLORS[i % COLORS.length].accent,
+                      } : {}}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* ════════════════════════════════
+            SECTION 2 — lineup assembly
+        ════════════════════════════════ */}
+        {displayMembers.length > 0 && (
+          <>
+            <div className="lineup-section-header">
+              <div className="about-badge" style={{ borderColor:'rgba(52,211,153,.25)', color:'#34d399', background:'rgba(52,211,153,.06)' }}>
+                <span className="about-badge-dot" style={{ background:'#34d399' }} />
+                The Full Lineup
+              </div>
+              <h2 className="team-headline" style={{ backgroundImage:'linear-gradient(135deg,#f0f4ff,#34d399)' }}>
+                All Hands On Deck
+              </h2>
+              <p className="team-sub">Watch the team assemble</p>
+            </div>
+
+            <div className="scroll-hint">
+              <span>Scroll</span>
+              <div className="scroll-arrow" />
+            </div>
+
+            <div ref={lineupWrapRef} className="lineup-pin-wrap">
+              <div className="lineup-stage">
+                <div className="lineup-label">Full Team</div>
+                <div className="lineup-row">
+                  {displayMembers.map((member, idx) => {
+                    const name    = member?.Name  || 'Unnamed';
+                    const title   = member?.title || '';
+                    const empImg  = member?.EmployeeImage;
+                    const imgData = empImg?.formats?.medium ?? empImg?.formats?.small ?? empImg?.formats?.thumbnail ?? empImg ?? null;
+                    const imgUrl  = imgData ? getImageUrl(imgData) : null;
+                    const { accent, glow } = COLORS[idx % COLORS.length];
+
+                    return (
+                      <div
+                        key={member?.id || idx}
+                        className="lineup-card"
+                        style={{ '--accent': accent, '--glow': glow }}
+                      >
+                        {imgUrl ? (
+                          <img src={imgUrl} alt={name} />
+                        ) : (
+                          <div className="card-avatar">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
+                            </svg>
+                          </div>
+                        )}
+                        <div className="lineup-overlay">
+                          <div className="lineup-name">{name}</div>
+                          {title && <div className="lineup-title">{title}</div>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
       </main>
     </>
   );
