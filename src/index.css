@@ -152,138 +152,13 @@
   }
 
   /* ============================================
-     TEAM CARD SWITCHING ANIMATION 
-     (Like game hero reveals - retriggerable)
+     CARD PACK OPENING ANIMATION
+     Stack → Fly out → Flip at center → Move to position
      ============================================ */
-  
-  /* Team card container with 3D perspective */
-  .team-card {
-    perspective: 1200px !important;
-    height: 100%;
-    position: relative;
-    min-height: 280px;
-    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  
-
-  /* Before reveal - all cards stack at center */
-  .team-card:not(.is-revealed) {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    z-index: 100;
-    width: 280px !important;
-    height: 400px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    /* Override grid positioning */
-    grid-column: unset !important;
-    grid-row: unset !important;
-  }
-
-  /* Hide the grid gap visually when stacked */
-  .team-card:not(.is-revealed)::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: transparent;
-    pointer-events: none;
-  }
-  
-  /* After reveal - card moves to grid position */
-  .team-card.is-revealed {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    z-index: auto;
-  }
-
-  /* Inner card wrapper for flip effect */
-  .team-card-inner {
-    position: relative !important;
-    width: 100% !important;
-    height: 100%;
-    min-height: 280px;
-    transition: 
-      transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.6s ease-out !important;
-    transition-delay: inherit;
-    transform-style: preserve-3d !important;
-    transform: rotateY(180deg) scale(0.95) translateY(0px) !important; /* Changed: removed Y offset, scale closer to 1 */
-    opacity: 0 !important;
-  }
-
-  /* When card is revealed */
-  .team-card.is-revealed .team-card-inner {
-    transform: rotateY(0deg) scale(1) translateY(0) !important;
-    opacity: 1 !important;
-  }
-
-  /* Front and back faces */
-  .team-card-front,
-  .team-card-back {
-    position: absolute !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 280px;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
-  }
-
-  /* Back of card (shows during flip) */
-  .team-card-back {
-    transform: rotateY(180deg) !important;
-    z-index: 2 !important;
-  }
-
-  /* Front of card (shows after flip) */
-  .team-card-front {
-    transform: rotateY(0deg) !important;
-    z-index: 1 !important;
-  }
 
   .backface-hidden {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-  }
-
-  .team-card-image {
-    width: 100%;
-    height: 320px; /* Portrait card height */
-    border-radius: 12px;
-    overflow: hidden;
-    transform: scale(0.85) !important;
-    opacity: 0 !important;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .team-card.is-revealed .team-card-image {
-    transform: scale(1) !important;
-    opacity: 1 !important;
-    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4); /* Glowing card effect */
-  }
-
-  /* Ensure images inside are visible when parent is revealed */
-  .team-card-image img {
-    opacity: 1 !important;
-  }
-
-  .team-card-image svg {
-    opacity: 1 !important;
-  }
-
-  /* Glow effect on reveal */
-  .team-card.is-revealed .team-card-front {
-    animation: cardGlow 0.8s ease-out;
-  }
-
-  /* Optional: Add hover effect after reveal */
-  .team-card.is-revealed:hover .team-card-inner {
-    transform: rotateY(0deg) scale(1.05) translateY(-8px) !important;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
   }
 
   /* Legacy reveal classes (keeping for backwards compatibility) */
@@ -309,7 +184,26 @@
   }
 }
 
-/* Keyframe animations */
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================ */
+
+/* Shine effect for card backs */
+@keyframes shine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.animate-shine {
+  background-size: 200% 100%;
+  animation: shine 2s linear infinite;
+}
+
+/* Card reveal animation */
 @keyframes revealUp {
   from {
     opacity: 0;
@@ -321,6 +215,7 @@
   }
 }
 
+/* Card glow effect on reveal */
 @keyframes cardGlow {
   0% {
     filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0));
@@ -336,6 +231,7 @@
   }
 }
 
+/* Cyber scan line animation */
 @keyframes cyberScan {
   0% {
     left: -100%;
@@ -344,3 +240,112 @@
     left: 100%;
   }
 }
+
+/* Particle float animation */
+@keyframes particleFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Glow pulse animation */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.4);
+  }
+}
+
+/* ============================================
+   BARAJA.JS STYLES
+   Card spreading library styles
+   ============================================ */
+
+.baraja {
+  position: relative;
+  margin: 0 auto;
+  list-style: none;
+  padding: 0;
+}
+
+.baraja > li {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform-origin: 50% 100%;
+  -webkit-transform-origin: 50% 100%;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  visibility: visible;
+  opacity: 1;
+  z-index: 1;
+}
+
+.baraja > li > * {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* When fanned out */
+.baraja.baraja-fan > li {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Shadow effect for stacked cards */
+.baraja > li::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.05);
+  top: 0;
+  left: 0;
+  border-radius: 12px;
+}
+
+.baraja > li:first-child::before {
+  display: none;
+}
+
+
+/* Make sure Baraja cards are visible and images render */
+.baraja > li img {
+  display: block !important;
+  object-fit: cover !important;
+}
+
+.baraja > li > * > * {
+  background: transparent !important;
+}
+
+.team-cards-container {
+  position: relative;
+  height: 100vh; /* full viewport for scroll pin */
+  overflow: hidden;
+}
+
+.team-card {
+  position: absolute; /* stack cards on top of each other */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* full viewport height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+

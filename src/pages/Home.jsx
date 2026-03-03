@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 import useCMSData from '../hooks/useCMSData';
 import * as cmsService from '../services/cmsService';
 import { getImageUrl } from '../utils/imageUtils';
@@ -10,6 +11,7 @@ import layerImg from '../assets/Layer.png';
 
 const Home = () => {
   const { data: home, loading, error } = useCMSData('home');
+  const navigate = useNavigate();
 
   // Show loading state
   if (loading) {
@@ -73,10 +75,10 @@ const Home = () => {
               </div>
 
               <div className="flex flex-wrap items-center gap-4">
-                <button className="btn-cyber">
-                  Talk to our team
+                <button className="btn-cyber" onClick={() => navigate('/team')}>
+                  Meet our team
                 </button>
-                <button className="btn-ghost">
+                <button className="btn-ghost" onClick={() => navigate('/services')}>
                   View capabilities
                 </button>
                 <span className="text-xs text-slate-400">
@@ -86,7 +88,7 @@ const Home = () => {
 
               <div className="grid grid-cols-3 gap-6 pt-4 border-t border-white/5 max-w-xl">
                 <div>
-                  <div className="text-sm text-slate-400">Active clients</div>
+                  <div className="text-sm text-slate-400">wdwdahdbhwabdhjabdhjawbdjabdhjabhjdawbhjdhjaw</div>
                   <div className="text-2xl font-semibold text-slate-50">10+</div>
                 </div>
                 <div>
