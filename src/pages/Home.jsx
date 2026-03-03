@@ -88,7 +88,7 @@ const Home = () => {
 
               <div className="grid grid-cols-3 gap-6 pt-4 border-t border-white/5 max-w-xl">
                 <div>
-                  <div className="text-sm text-slate-400">wdwdahdbhwabdhjabdhjawbdjabdhjabhjdawbhjdhjaw</div>
+                  <div className="text-sm text-slate-400">Active clients</div>
                   <div className="text-2xl font-semibold text-slate-50">10+</div>
                 </div>
                 <div>
