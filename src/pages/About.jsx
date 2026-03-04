@@ -155,6 +155,34 @@ const About = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const { data: about, loading, error } = useCMSData('about');
 
+  useEffect(() => {
+    const el = document.querySelector('.fx-cursor');
+    if (!el) return;
+
+    const move = (e) => {
+      el.style.setProperty('--mx', `${e.clientX}px`);
+      el.style.setProperty('--my', `${e.clientY}px`);
+    };
+
+    window.addEventListener('pointermove', move, { passive: true });
+    return () => window.removeEventListener('pointermove', move);
+  }, []);
+
+  useEffect(() => {
+    const bar = document.querySelector('.top-progress-bar');
+    if (!bar) return;
+
+    const onScroll = () => {
+      const h = document.documentElement;
+      const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      bar.style.transform = `scaleX(${Math.max(0, Math.min(1, p))})`;
+    };
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   /* ── Section reveals ── */
   useEffect(() => {
     if (loading) return;
@@ -190,7 +218,7 @@ const About = () => {
     const ctx = gsap.context(() => {
       gsap.set(cards[0], { yPercent: 0, opacity: 1, scale: 1 });
       cards.forEach((c, i) => {
-        if (i > 0) gsap.set(c, { yPercent: 108, opacity: 0, scale: 0.96 });
+        if (i > 0) gsap.set(c, { yPercent: 130, opacity: 0, scale: 0.96 });
       });
       setActiveIndex(0);
 
@@ -234,8 +262,8 @@ const About = () => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: lineupWrapRef.current,
-          start: 'top top',
-          end: `+=${total * 600}`,
+          start: 'top 20%',
+          end: `+=${total * 520}`,
           pin: true,
           scrub: 1.2,
           anticipatePin: 1,
@@ -288,6 +316,51 @@ const About = () => {
           @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
           *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+          /* ===== FX background ===== */
+          .fx-bg{
+            position:fixed; inset:0; pointer-events:none; z-index:0;
+            background:
+              radial-gradient(900px 500px at 20% 20%, rgba(56,189,248,.12), transparent 60%),
+              radial-gradient(800px 520px at 80% 25%, rgba(129,140,248,.10), transparent 60%),
+              radial-gradient(900px 600px at 50% 85%, rgba(52,211,153,.10), transparent 60%),
+              radial-gradient(700px 500px at 85% 80%, rgba(244,114,182,.08), transparent 60%);
+            filter:saturate(1.1);
+          }
+
+          .fx-bg::after{
+            content:'';
+            position:absolute; inset:0;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
+            opacity:.18; mix-blend-mode:overlay;
+          }
+
+          /* Cursor glow */
+          .fx-cursor{
+            position:fixed; inset:0; pointer-events:none; z-index:2;
+          }
+          .fx-cursor::before{
+            content:'';
+            position:absolute;
+            left:var(--mx); top:var(--my);
+            width:520px; height:520px;
+            transform:translate(-50%,-50%);
+            background:radial-gradient(circle, rgba(56,189,248,.14), transparent 65%);
+            filter:blur(12px);
+            transition:opacity .2s ease;
+            opacity:.9;
+          }
+
+          .top-progress{
+            position:fixed; top:0; left:0; right:0; height:2px; z-index:10;
+            background:rgba(148,163,184,.10);
+          }
+          .top-progress-bar{
+            height:100%;
+            transform-origin:left;
+            transform:scaleX(0);
+            background:linear-gradient(90deg,#38bdf8,#818cf8,#34d399);
+          }
+
           .about-loading {
             min-height:100vh; display:flex; flex-direction:column;
             align-items:center; justify-content:center; gap:1rem;
@@ -301,7 +374,34 @@ const About = () => {
           }
           @keyframes spin { to { transform:rotate(360deg); } }
 
-          .about-page { font-family:'Syne',sans-serif; color:#f0f4ff; }
+          .about-page { font-family:'Syne',sans-serif; color:#f0f4ff; position:relative; z-index:1; }
+
+          .card-inner{
+            transform-style:preserve-3d;
+            transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s;
+          }
+          .team-card:hover .card-inner{
+            transform: perspective(900px) rotateX(6deg) rotateY(-8deg) translateY(-6px);
+            box-shadow:
+              0 0 0 1px rgba(255,255,255,.05),
+              0 0 70px var(--glow),
+              0 40px 110px rgba(0,0,0,.8);
+          }
+          .card-inner::before{
+            content:'';
+            position:absolute; inset:-40%;
+            background:linear-gradient(120deg, transparent 35%, rgba(255,255,255,.10) 50%, transparent 65%);
+            transform:translateX(-40%) rotate(12deg);
+            opacity:0;
+            transition:opacity .2s ease;
+          }
+          .team-card:hover .card-inner::before{
+            opacity:1;
+            animation: sheen 1.1s ease;
+          }
+          @keyframes sheen{
+            to { transform:translateX(40%) rotate(12deg); }
+          }
 
           /* Badge */
           .about-badge {
@@ -574,12 +674,27 @@ const About = () => {
             width:5px; height:5px; border-radius:50%;
             background:#1e293b; border:1px solid #1e293b;
             transition:all .4s cubic-bezier(.34,1.56,.64,1);
+            cursor:pointer;
           }
+          .pdot:focus{ outline:2px solid rgba(56,189,248,.35); outline-offset:4px; }
           .pdot.active { width:20px; border-radius:3px; }
 
           /* ════════════════════════════════
              SECTION 2 — lineup assembly
           ════════════════════════════════ */
+          .lineup-card{
+            transition: transform .35s cubic-bezier(.22,1,.36,1), filter .35s, opacity .35s;
+          }
+          .lineup-row:hover .lineup-card{
+            opacity:.55;
+            filter:saturate(.9);
+          }
+          .lineup-row:hover .lineup-card:hover{
+            opacity:1;
+            filter:saturate(1.2);
+            transform: translateY(-10px) scale(1.04);
+            z-index:5;
+          }        
           .lineup-section-header {
             text-align:center; padding:5rem 2rem 3rem;
           }
@@ -662,9 +777,10 @@ const About = () => {
 
           /* "Full Team" label above the row */
           .lineup-label {
-            font-family:'DM Mono',monospace;
-            font-size:.65rem; letter-spacing:.2em; text-transform:uppercase;
-            color:#334155; margin-bottom:1.75rem;
+            font-family:'math';
+            font-size:2rem; letter-spacing:.2em; text-transform:uppercase;
+            color:#ffff; margin-bottom:1.75rem;
+            margin-top:-25rem;
             display:flex; align-items:center; gap:.75rem;
           }
           .lineup-label::before,
@@ -679,6 +795,12 @@ const About = () => {
       </Helmet>
 
       <main ref={mainRef} className="about-page">
+        <div className="fx-bg" aria-hidden="true" />
+        <div className="fx-cursor" aria-hidden="true" />
+
+        <div className="top-progress" aria-hidden="true">
+          <div className="top-progress-bar" />
+        </div>
 
         {/* ── Header ── */}
         <div ref={headerRef} className="about-header">
@@ -747,9 +869,17 @@ const About = () => {
 
                 <div className="progress-strip">
                   {displayMembers.map((_, i) => (
-                    <div
+                    <button
                       key={i}
+                      type="button"
                       className={`pdot${activeIndex === i ? ' active' : ''}`}
+                      onClick={() => {
+                        // jump scroll to that "step"
+                        const st = ScrollTrigger.getAll().find(t => t.trigger === teamWrapRef.current);
+                        if (!st) return;
+                        const progress = i / (displayMembers.length - 1 || 1);
+                        window.scrollTo({ top: st.start + (st.end - st.start) * progress, behavior: 'smooth' });
+                      }}
                       style={activeIndex === i ? {
                         background: COLORS[i % COLORS.length].accent,
                         borderColor: COLORS[i % COLORS.length].accent,

@@ -75,7 +75,7 @@ const Home = () => {
               </div>
 
               <div className="flex flex-wrap items-center gap-4">
-                <button className="btn-cyber" onClick={() => navigate('/team')}>
+                <button className="btn-cyber">
                   Meet our team
                 </button>
                 <button className="btn-ghost" onClick={() => navigate('/services')}>
