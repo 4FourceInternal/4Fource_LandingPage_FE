@@ -1,0 +1,27 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: fe-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, frontend]
+    steps:
+      - name: Pull latest
+        run: |
+          cd /home/ubuntu/projects/frontend
+          git fetch origin main
+          git reset --hard origin/main
+
+      - name: Install + build
+        run: |
+          cd /home/ubuntu/projects/frontend
+          npm ci
+          npm run build
+      # nginx serves /home/ubuntu/projects/frontend/dist directly — no reload needed.
