@@ -99,7 +99,7 @@ const MemberDetail = ({ member, index, isActive }) => {
   return (
     <div
       ref={panelRef}
-      className="detail-panel"
+      className={`detail-panel${isActive ? ' is-active' : ''}`}
       style={{
         '--accent': accent,
         '--rgb': rgb,
@@ -678,6 +678,103 @@ const About = () => {
           }
           .pdot:focus{ outline:2px solid rgba(56,189,248,.35); outline-offset:4px; }
           .pdot.active { width:20px; border-radius:3px; }
+
+          /* Section 1 — mobile / narrow (≤734px, e.g. 734×1318) */
+          @media (max-width: 734px) {
+            .team-stage {
+              height: auto;
+              min-height: 100vh;
+              padding: 1.5rem 0 3rem;
+              align-items: stretch;
+            }
+            .team-inner {
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              max-width: 100%;
+              height: auto;
+              padding: 0 1.25rem;
+              gap: 0;
+            }
+            .cards-col {
+              position: relative;
+              width: 100%;
+              max-width: 380px;
+              height: min(62vw, 420px);
+              margin: 0 auto;
+              flex-shrink: 0;
+            }
+            .detail-col {
+              position: relative;
+              width: 100%;
+              max-width: 380px;
+              margin: 0 auto;
+              border-left: none;
+              border-top: 1px solid rgba(148,163,184,.07);
+              min-height: 0;
+              overflow: visible;
+              margin-top: 1.25rem;
+            }
+            .detail-panel {
+              display: none;
+            }
+            .detail-panel.is-active {
+              display: flex;
+              position: relative;
+              inset: auto;
+              height: auto;
+              min-height: 0;
+              justify-content: flex-start;
+              padding: 1.5rem 0 2rem;
+              overflow: visible;
+            }
+            .d-name {
+              font-size: 1.75rem;
+              margin-bottom: 1.25rem;
+            }
+            .d-rule { margin-bottom: 1.25rem; }
+            .d-badge { margin-bottom: 1.25rem; }
+            .d-field {
+              margin-bottom: 1.25rem;
+              flex-shrink: 0;
+            }
+            .d-field-value {
+              display: block;
+              font-size: 0.95rem;
+              line-height: 1.65;
+              white-space: normal;
+              word-break: break-word;
+              overflow-wrap: anywhere;
+            }
+            .d-quote-text {
+              white-space: normal;
+              word-break: break-word;
+            }
+            .d-ghost-num {
+              position: relative;
+              bottom: auto;
+              right: auto;
+              align-self: flex-end;
+              margin-top: 0.5rem;
+              font-size: 4.5rem;
+              line-height: 1;
+            }
+            .progress-strip {
+              position: relative;
+              bottom: auto;
+              left: auto;
+              transform: none;
+              margin-top: 1.5rem;
+              padding-bottom: 0.5rem;
+            }
+            .team-card:hover .card-inner {
+              transform: none;
+              box-shadow:
+                0 0 0 1px rgba(255,255,255,.03),
+                0 0 50px var(--glow),
+                0 30px 80px rgba(0,0,0,.7);
+            }
+          }
 
           /* ════════════════════════════════
              SECTION 2 — lineup assembly

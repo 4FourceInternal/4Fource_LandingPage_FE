@@ -70,6 +70,9 @@ const fetchContent = async (endpoint, cacheKey) => {
     populateParam = 'populate[defaultSeo][populate]=*&populate[footer][populate][quickLinks][populate]=*&populate[footer][populate][contactInfo][populate]=*&populate[header][populate][brand][populate]=*&populate[header][populate][navLinks][populate]=*';
   } else if (endpoint === '/service-page-content') {
     populateParam = 'populate[seo][populate]=*&populate[cards][populate]=*';
+  } else if (endpoint === '/clients-page') {
+    populateParam =
+      'populate[seo][populate]=*&populate[backgroundImage][populate]=*&populate[openProjects][populate][clients][populate][logo][populate]=*&populate[privateProjects][populate][clients][populate][logo][populate]=*';
   }
 
   try {
@@ -160,6 +163,15 @@ export const getContactContent = async () => {
   return await fetchContent('/contact', 'contact');
 };
 
+// Clients page content
+export const getClientsContent = async () => {
+  if (!CMS_CONFIG.ENABLE_CMS) {
+    throw new Error('CMS is disabled. Please enable CMS integration.');
+  }
+
+  return await fetchContent('/clients-page', 'clients');
+};
+
 // Global content (header, footer)
 export const getGlobalContent = async () => {
   if (!CMS_CONFIG.ENABLE_CMS) {
@@ -182,5 +194,6 @@ export default {
   getServicesContent,
   getInfoContent,
   getContactContent,
+  getClientsContent,
   getGlobalContent,
 };

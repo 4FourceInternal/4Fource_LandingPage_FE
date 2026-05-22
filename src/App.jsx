@@ -3,11 +3,13 @@ import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTopButton from './components/ScrollToTopButton';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
 import Info from './pages/Info';
 import Contact from './pages/Contact';
+import Clients from './pages/Clients';
 import Team from './pages/Team';
 
 import Layer from './assets/Layer.png';
@@ -32,11 +34,13 @@ function App() {
                 <Route path="/team" element={<Team />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/services" element={<Services />} />
+                <Route path="/clients" element={<Clients />} />
                 <Route path="/info" element={<Info />} />
                 <Route path="/contact" element={<Contact />} />
               </Routes>
             </div>
             <Footer />
+            <ScrollToTopButton />
           </div>
         </div>
       </Router>

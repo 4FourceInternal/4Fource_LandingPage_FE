@@ -51,7 +51,7 @@ const Home = () => {
       <main className="container-custom relative z-0">
         {/* Hero Section - Split Layout */}
         <section className="relative min-h-[70vh] md:min-h-[78vh] flex items-center pt-10 md:pt-14">
-          <div className="grid grid-cols-1 lg:grid-cols-[3fr,2fr] gap-10 items-center w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr,2fr] gap-16 lg:gap-10 items-center w-full">
             {/* Left - Text & CTAs */}
             <div className="space-y-8">
               <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300">
@@ -75,7 +75,7 @@ const Home = () => {
               </div>
 
               <div className="flex flex-wrap items-center gap-4">
-                <button className="btn-cyber">
+                <button className="btn-cyber" onClick={() => navigate('/about')}>
                   Meet our team
                 </button>
                 <button className="btn-ghost" onClick={() => navigate('/services')}>

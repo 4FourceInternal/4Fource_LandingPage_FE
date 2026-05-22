@@ -21,8 +21,9 @@ const Footer = () => {
     quickLinks: [
       { path: '/about', label: 'About Us' },
       { path: '/services', label: 'Our Service' },
+      { path: '/clients', label: 'Our Client' },
       { path: '/info', label: 'Quick Info' },
-      { path: '/contact', label: 'Contact Us' }
+      { path: '/contact', label: 'Contact Us' },
     ],
     contactInfo: {
       address: 'B3-3A-13A Solaris Dutamas, No. 1 Jalan Dutamas 1, 50480 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur.',
@@ -46,11 +47,21 @@ const Footer = () => {
   };  
 
   // Extract quick links with fallbacks
-  const quickLinks = footer?.quickLinks || [
+  const mergeQuickLinks = (links) => {
+    const list = [...(links || [])];
+    if (!list.some((l) => l.path === '/clients')) {
+      const idx = list.findIndex((l) => l.path === '/services');
+      list.splice(idx >= 0 ? idx + 1 : list.length, 0, { path: '/clients', label: 'Our Client' });
+    }
+    return list;
+  };
+
+  const quickLinks = mergeQuickLinks(footer?.quickLinks) || [
     { path: '/about', label: 'About Us' },
     { path: '/services', label: 'Our Service' },
+    { path: '/clients', label: 'Our Client' },
     { path: '/info', label: 'Quick Info' },
-    { path: '/contact', label: 'Contact Us' }
+    { path: '/contact', label: 'Contact Us' },
   ];
 
 

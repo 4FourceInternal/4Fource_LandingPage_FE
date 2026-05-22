@@ -23,17 +23,29 @@ const Header = () => {
     Array.isArray(global.header.navLinks) && 
     global.header.navLinks.length > 0;
 
-  const header = hasHeaderData ? global.header : {
-    brand: {
-      logoText: 'Qoyy Global'
-    },
-    navLinks: [
-      { path: '/about', label: 'About Us' },
-      { path: '/services', label: 'Our Service' },
-      { path: '/info', label: 'Quick Info' },
-      { path: '/contact', label: 'Contact Us' }
-    ]
+  const fallbackNavLinks = [
+    { path: '/about', label: 'About Us' },
+    { path: '/services', label: 'Our Service' },
+    { path: '/clients', label: 'Our Client' },
+    { path: '/info', label: 'Quick Info' },
+    { path: '/contact', label: 'Contact Us' },
+  ];
+
+  const mergeNavLinks = (links) => {
+    const list = [...(links || [])];
+    if (!list.some((l) => l.path === '/clients')) {
+      const idx = list.findIndex((l) => l.path === '/services');
+      list.splice(idx >= 0 ? idx + 1 : list.length, 0, { path: '/clients', label: 'Our Client' });
+    }
+    return list;
   };
+
+  const header = hasHeaderData
+    ? { ...global.header, navLinks: mergeNavLinks(global.header.navLinks) }
+    : {
+        brand: { logoText: 'Qoyy Global' },
+        navLinks: fallbackNavLinks,
+      };
 
 
 
@@ -83,7 +95,7 @@ const Header = () => {
         />
       )}
       
-      <header className="sticky top-0 z-[10001] h-20">
+      <header className=" top-0 z-[10001] h-20 mt-10">
         <div className="container-custom h-full px-4">
           <div className="h-full rounded-2xl glass-effect flex items-center justify-between px-4 md:px-6">
             {/* Logo - Left */}
@@ -110,7 +122,7 @@ const Header = () => {
             </Link>
 
             {/* Desktop Navigation - Center */}
-            <nav className="hidden md:flex items-center gap-2">
+            <nav className="hidden md:flex items-center  gap-2">
               {header?.navLinks?.filter(link => link.path !== '/').map((link, index) => (
                 <Link
                   key={link.path}
