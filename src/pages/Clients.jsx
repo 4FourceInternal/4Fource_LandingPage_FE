@@ -25,7 +25,10 @@ const normalizeClient = (client, index) => ({
     client?.name ||
     client?.Name ||
     'Client',
-  logo: getImageUrl(client?.logo) || getImageUrl(client?.Logo) || client?.logoUrl || null,
+  logo:
+    getImageUrl(client?.logo ?? client?.Logo) ||
+    client?.logoUrl ||
+    null,
   description:
     client?.description ||
     client?.note ||
