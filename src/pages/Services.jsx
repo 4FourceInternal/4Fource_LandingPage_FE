@@ -32,23 +32,56 @@ const Services = () => {
       return cards.map((card, index) => {
         let features = [];
       
+        // // If features is already an array
+        // if (Array.isArray(card.features)) {
+        //   features = card.features;
+        // } 
+        // // If it's a string (like in your API)
+        // else if (typeof card.features === 'string') {
+        //   try {
+        //     // Remove quotes/brackets and split by comma
+        //     features = card.features
+        //       .replace(/[\[\]"]+/g, '')       // remove brackets/quotes
+        //       .split(',')
+        //       .map(f => f.trim().replace(/^'|'$/g, '')) // trim spaces & stray quotes
+        //       .filter(f => f.length > 0);
+        //   } catch (err) {
+        //     console.error('Error parsing features:', err);
+        //   }
+        // }
+
         // If features is already an array
         if (Array.isArray(card.features)) {
-          features = card.features;
+          // Check if it's an array with a single string element like ["'item1', 'item2'"]
+          if (card.features.length === 1 && typeof card.features[0] === 'string') {
+            try {
+              // Parse the single string element
+              features = card.features[0]
+                .split(',')                          // Split by comma
+                .map(f => f.trim())                  // Trim whitespace
+                .map(f => f.replace(/^['"]|['"]$/g, '')) // Remove surrounding quotes
+                .filter(f => f.length > 0);          // Remove empty strings
+            } catch (err) {
+              console.error('Error parsing features array:', err);
+              features = card.features;
+            }
+          } else {
+            // Already a proper array
+            features = card.features;
+          }
         } 
-        // If it's a string (like in your API)
+        // If it's a string (fallback)
         else if (typeof card.features === 'string') {
           try {
-            // Remove quotes/brackets and split by comma
             features = card.features
-              .replace(/[\[\]"]+/g, '')       // remove brackets/quotes
               .split(',')
-              .map(f => f.trim().replace(/^'|'$/g, '')) // trim spaces & stray quotes
+              .map(f => f.trim().replace(/^['"]|['"]$/g, ''))
               .filter(f => f.length > 0);
           } catch (err) {
-            console.error('Error parsing features:', err);
+            console.error('Error parsing features string:', err);
           }
         }
+        
         return {
           title: card.title || `Service ${index + 1}`,
           description: card.description || 'Service description will appear here.',
@@ -98,14 +131,13 @@ const Services = () => {
     if (isTransitioning || !serviceSlides || serviceSlides.length === 0) return;
 
     setIsTransitioning(true);
-    setCurrentSlide((prev) => {
-      const next = (prev + 1) % serviceSlides.length;
-      return Math.max(0, Math.min(next, serviceSlides.length - 1));
-    });
-
     setTimeout(() => {
-      setIsTransitioning(false);
-    }, 700);
+      setCurrentSlide((prev) => {
+        const next = (prev + 1) % serviceSlides.length;
+        return Math.max(0, Math.min(next, serviceSlides.length - 1));
+      });
+      setTimeout(() => setIsTransitioning(false), 550);
+    }, 550);
   };
 
   // Show loading state
@@ -159,10 +191,10 @@ const Services = () => {
           {serviceSlides && serviceSlides.length > 0 && serviceSlides[currentSlide] ? (
             <div className="relative">
               {/* Main Service Card with Timeline Design */}
-              <div className="relative bg-gradient-to-br from-white via-tech-50 to-tech-100 rounded-2xl shadow-2xl overflow-hidden border border-tech-200">
+              <div className="relative bg-gradient-to-br from-slate-900/80 via-slate-800/80 to-slate-900/80 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-white/10">
                 {/* Service Number Badge */}
                 <div className="absolute top-6 left-6 z-10">
-                  <div className="w-12 h-12 bg-gradient-to-r from-tech-500 to-tech-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                  <div className="w-12 h-12 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg border border-sky-300">
                     {currentSlide + 1}
                   </div>
                 </div>
@@ -172,12 +204,14 @@ const Services = () => {
                   onClick={() => {
                     if (!isTransitioning && serviceSlides.length > 1) {
                       setIsTransitioning(true);
-                      setCurrentSlide((prev) => prev === 0 ? serviceSlides.length - 1 : prev - 1);
-                      setTimeout(() => setIsTransitioning(false), 700);
+                      setTimeout(() => {
+                        setCurrentSlide((prev) => prev === 0 ? serviceSlides.length - 1 : prev - 1);
+                        setTimeout(() => setIsTransitioning(false), 550);
+                      }, 550);
                     }
                   }}
                   disabled={isTransitioning || serviceSlides.length <= 1}
-                  className={`absolute left-4 top-1/2 z-20 transform -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white text-tech-700 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 ${
+                  className={`absolute left-4 top-1/2 z-20 transform -translate-y-1/2 w-10 h-10 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 border border-sky-300 ${
                     isTransitioning || serviceSlides.length <= 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100 hover:scale-105'
                   }`}
                   aria-label="Previous service"
@@ -190,7 +224,7 @@ const Services = () => {
                 <button
                   onClick={nextSlide}
                   disabled={isTransitioning || serviceSlides.length <= 1}
-                  className={`absolute right-4 top-1/2 z-20 transform -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white text-tech-700 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 ${
+                  className={`absolute right-4 top-1/2 z-20 transform -translate-y-1/2 w-10 h-10 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 border border-sky-300 ${
                     isTransitioning || serviceSlides.length <= 1 
                       ? 'opacity-50 cursor-not-allowed' 
                       : 'opacity-100 hover:scale-105'
@@ -208,18 +242,18 @@ const Services = () => {
                 }`}>
                   {/* Service Title with Icon */}
                   <div className="flex items-center justify-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-tech-500 to-tech-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                    <div className="w-16 h-16 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-xl flex items-center justify-center mr-4 shadow-lg border border-sky-300">
                       <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
-                    <h3 className="text-3xl md:text-4xl font-bold text-accent-800 transition-all duration-500 ease-in-out">
+                    <h3 className="text-3xl md:text-4xl font-bold tech-text-gradient transition-all duration-500 ease-in-out">
                       {serviceSlides[currentSlide]?.title || 'Service Title'}
                     </h3>
                   </div>
                   
                   {/* Service Description */}
-                  <p className="text-lg text-accent-600 mb-8 leading-relaxed text-center max-w-4xl mx-auto transition-all duration-600 ease-in-out">
+                  <p className="text-lg text-slate-300 mb-8 leading-relaxed text-center max-w-4xl mx-auto transition-all duration-600 ease-in-out">
                     {serviceSlides[currentSlide]?.description || 'Service description will appear here.'}
                   </p>
                   
@@ -228,35 +262,35 @@ const Services = () => {
                     {serviceSlides[currentSlide] && Array.isArray(serviceSlides[currentSlide].features) ? 
                       serviceSlides[currentSlide].features.map((feature, index) => (
                         <div
-                          key={index}
-                          className={`bg-white/60 backdrop-blur-sm border border-tech-200 rounded-xl p-4 flex items-center transition-all duration-700 ease-in-out transform hover:scale-105 hover:shadow-lg ${
+                            key={index}
+                            className={`bg-slate-800/60 backdrop-blur-sm border border-white/10 rounded-xl p-4 flex items-center transition-all duration-700 ease-in-out transform hover:scale-105 hover:shadow-xl hover:border-sky-400/50 ${
                             isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
                           }`}
                           style={{ transitionDelay: `${index * 100}ms` }}
                         >
-                          <div className="w-8 h-8 bg-gradient-to-r from-tech-500 to-tech-600 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                          <div className="w-8 h-8 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 border border-sky-300">
                             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                           </div>
-                          <span className="text-accent-700 font-medium">{feature}</span>
+                          <span className="text-slate-200 font-medium">{feature}</span>
                         </div>
                       ))
                       : 
                       ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'].map((feature, index) => (
                         <div
                           key={index}
-                          className={`bg-white/60 backdrop-blur-sm border border-tech-200 rounded-xl p-4 flex items-center transition-all duration-700 ease-in-out transform hover:scale-105 hover:shadow-lg ${
+                          className={`bg-slate-800/60 backdrop-blur-sm border border-white/10 rounded-xl p-4 flex items-center transition-all duration-700 ease-in-out transform hover:scale-105 hover:shadow-xl hover:border-sky-400/50 ${
                             isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
                           }`}
                           style={{ transitionDelay: `${index * 100}ms` }}
                         >
-                          <div className="w-8 h-8 bg-gradient-to-r from-tech-500 to-tech-600 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                          <div className="w-8 h-8 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 border border-sky-300">
                             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                           </div>
-                          <span className="text-accent-700 font-medium">{feature}</span>
+                          <span className="text-slate-200 font-medium">{feature}</span>
                         </div>
                       ))
                     }
@@ -291,15 +325,17 @@ const Services = () => {
                   onClick={() => {
                     if (!isTransitioning && index !== currentSlide) {
                       setIsTransitioning(true);
-                      setCurrentSlide(index);
-                      setTimeout(() => setIsTransitioning(false), 700);
+                      setTimeout(() => {
+                        setCurrentSlide(index);
+                        setTimeout(() => setIsTransitioning(false), 550);
+                      }, 550);
                     }
                   }}
                   disabled={isTransitioning}
                   className={`w-4 h-4 rounded-full transition-all duration-300 transform ${
                     index === currentSlide
-                      ? 'bg-gradient-to-r from-tech-500 to-tech-600 scale-125 shadow-lg'
-                      : 'bg-tech-300 hover:bg-tech-400 hover:scale-110'
+                      ? 'bg-gradient-to-r from-sky-500 to-indigo-500 scale-125 shadow-lg border border-sky-300'
+                      : 'bg-slate-600 hover:bg-slate-500 hover:scale-110 border border-white/20'
                   } ${isTransitioning ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                   aria-label={`Go to slide ${index + 1}`}
                 />

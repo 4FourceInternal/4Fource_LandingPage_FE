@@ -35,6 +35,7 @@ The following content types have been created for you:
 - **Service Page Content** (`/api/service-page-content`) - Services page content
 - **Info** (`/api/info`) - Info/FAQ page content
 - **Contact** (`/api/contact`) - Contact page content
+- **Clients Page** (`/api/clients-page`) - Our Client page (logos, open & private projects)
 - **Global** (`/api/global`) - Header, footer, and global settings
 
 ### 3. Add Content
@@ -184,6 +185,43 @@ Responses are cached for 5 minutes to improve performance.
   }
 }
 ```
+
+### Clients Page (Our Client)
+In Strapi admin: **Content Manager → Clients Page** (single type).
+
+You will see two sections:
+
+1. **Open Projects** — expand → under **Clients** click **Add an entry** for each client  
+2. **Private Projects** — same for private-sector clients  
+
+Each client entry (**Client** component):
+
+| Field | Purpose |
+|--------|--------|
+| **clientName** | Client name on the card |
+| **logo** | Upload logo image |
+| **description** | Short text under the name |
+
+```javascript
+{
+  seo: { metaTitle, metaDescription, shareImage },
+  heading: "string",
+  lead: "string",
+  backgroundImage: "media (optional)",
+  openProjects: {
+    sectionTitle: "Open Projects",
+    sectionDescription: "string",
+    clients: [{ clientName, logo, description }]
+  },
+  privateProjects: {
+    sectionTitle: "Private Projects",
+    sectionDescription: "string",
+    clients: [{ clientName, logo, description }]
+  }
+}
+```
+
+API: `GET /api/clients-page?populate=...` (frontend uses `getClientsContent`).
 
 ### Contact Page
 ```javascript

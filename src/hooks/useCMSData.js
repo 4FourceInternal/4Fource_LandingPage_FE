@@ -31,6 +31,9 @@ export const useCMSData = (contentType) => {
           case 'contact':
             content = await cmsService.getContactContent();
             break;
+          case 'clients':
+            content = await cmsService.getClientsContent();
+            break;
           case 'global':
             content = await cmsService.getGlobalContent();
             break;

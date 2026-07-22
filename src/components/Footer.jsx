@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import useCMSData from '../hooks/useCMSData';
 import * as cmsService from '../services/cmsService';
-import LogoCompany from '../assets/CompanyLogo.jpeg';
+import LogoCompany from '../assets/CompanyLogo.png';
 import phoneicon from '../assets/Phone.png';
 import emailicon from '../assets/Letter.png';
 import addressicon from '../assets/Address.png';
@@ -21,8 +21,9 @@ const Footer = () => {
     quickLinks: [
       { path: '/about', label: 'About Us' },
       { path: '/services', label: 'Our Service' },
+      { path: '/clients', label: 'Our Client' },
       { path: '/info', label: 'Quick Info' },
-      { path: '/contact', label: 'Contact Us' }
+      { path: '/contact', label: 'Contact Us' },
     ],
     contactInfo: {
       address: 'B3-3A-13A Solaris Dutamas, No. 1 Jalan Dutamas 1, 50480 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur.',
@@ -46,11 +47,21 @@ const Footer = () => {
   };  
 
   // Extract quick links with fallbacks
-  const quickLinks = footer?.quickLinks || [
+  const mergeQuickLinks = (links) => {
+    const list = [...(links || [])];
+    if (!list.some((l) => l.path === '/clients')) {
+      const idx = list.findIndex((l) => l.path === '/services');
+      list.splice(idx >= 0 ? idx + 1 : list.length, 0, { path: '/clients', label: 'Our Client' });
+    }
+    return list;
+  };
+
+  const quickLinks = mergeQuickLinks(footer?.quickLinks) || [
     { path: '/about', label: 'About Us' },
     { path: '/services', label: 'Our Service' },
+    { path: '/clients', label: 'Our Client' },
     { path: '/info', label: 'Quick Info' },
-    { path: '/contact', label: 'Contact Us' }
+    { path: '/contact', label: 'Contact Us' },
   ];
 
 
@@ -83,65 +94,105 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-gradient-to-r from-tech-800 to-tech-900 text-white relative z-50">
+    <footer className="relative z-40 border-t border-white/10 bg-slate-950/90 backdrop-blur-2xl">
       <div className="container-custom section-padding">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center items-center text-center">
-          {/* Contact Information */}
-          <div className="flex flex-col items-center justify-center h-full w-full">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3 text-tech-100">
+        {/* Top Section */}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr,1.5fr,1.5fr] gap-10 mb-10">
+          {/* Brand */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
+                <img
+                  src={LogoCompany}
+                  alt={footer.companyName}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-slate-100 uppercase tracking-[0.18em]">
+                  {footer.companyName}
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  Building modern experiences for brands and teams.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-4 text-xs text-slate-400">
+              <span className="px-3 py-1 rounded-full border border-white/10">
+                Strategy & consulting
+              </span>
+              <span className="px-3 py-1 rounded-full border border-white/10">
+                Product & web
+              </span>
+              <span className="px-3 py-1 rounded-full border border-white/10">
+                Ongoing support
+              </span>
+            </div>
+          </div>
+
+          {/* Contact */}
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold text-slate-300 tracking-[0.18em] uppercase">
+              Contact
+            </h4>
+            <div className="space-y-3 text-sm text-slate-300">
+              <div className="flex items-start gap-3">
                 <img
                   src={addressicon}
                   alt="Address Icon"
-                  className="w-5 h-5"
+                  className="w-4 h-4 mt-1 opacity-80"
                 />
-                <span className="text-sm">{contactInfo.address}</span>
+                <span className="leading-relaxed">
+                  {contactInfo.address}
+                </span>
               </div>
-              <div className="flex items-center space-x-3 text-tech-100">
+              <div className="flex items-center gap-3">
                 <img
                   src={emailicon}
                   alt="Email Icon"
-                  className="w-5 h-5"
+                  className="w-4 h-4 opacity-80"
                 />
-                <span className="text-sm">{contactInfo.email}</span>
+                <span>{contactInfo.email}</span>
               </div>
-              <div className="flex items-center space-x-3 text-tech-100">
+              <div className="flex items-center gap-3">
                 <img
                   src={phoneicon}
                   alt="Phone Icon"
-                  className="w-5 h-5"
+                  className="w-4 h-4 opacity-80"
                 />
-                <span className="text-sm">{contactInfo.phone}</span>
+                <span>{contactInfo.phone}</span>
               </div>
             </div>
           </div>
 
-          {/* Logo and Copyright */}
-          <div className="flex flex-col items-center justify-center space-y-4 h-full">
-            <div className="flex items-center space-x-3">
-              <img
-                src={LogoCompany}
-                alt={footer.companyName}
-                className="h-16"
-              />
-              <span className="tech-text-gradient text-xl font-bold">Fource Technologies</span>
+          {/* Links */}
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold text-slate-300 tracking-[0.18em] uppercase">
+              Pages
+            </h4>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              {quickLinks.filter(link => link.path !== '/').map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="text-slate-300 hover:text-white transition-colors duration-150"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
-            <p className="whitespace-pre-line text-sm text-center text-tech-200">
-              {footer.copyright}
-            </p>
           </div>
+        </div>
 
-          {/* Navigation Links */}
-          <div className="flex flex-col items-center gap-3 justify-center h-full">
-            {quickLinks.filter(link => link.path !== '/').map((link) => (
-              <Link 
-                key={link.path}
-                to={link.path} 
-                className="text-tech-200 font-medium text-sm hover:text-white hover:scale-105 transition-all duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
+        {/* Bottom */}
+        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <p className="whitespace-pre-line text-xs text-slate-500">
+            {footer.copyright}
+          </p>
+          <div className="flex items-center gap-3 text-[11px] text-slate-500">
+            <span>Designed for product teams</span>
+            <span className="w-1 h-1 rounded-full bg-slate-500" />
+            <span>Made in Malaysia</span>
           </div>
         </div>
       </div>
