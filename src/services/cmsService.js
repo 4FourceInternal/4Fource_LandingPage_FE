@@ -69,7 +69,8 @@ const fetchContent = async (endpoint, cacheKey) => {
   } else if (endpoint === '/global') {
     populateParam = 'populate[defaultSeo][populate]=*&populate[footer][populate][quickLinks][populate]=*&populate[footer][populate][contactInfo][populate]=*&populate[header][populate][brand][populate]=*&populate[header][populate][navLinks][populate]=*';
   } else if (endpoint === '/service-page-content') {
-    populateParam = 'populate[seo][populate]=*&populate[cards][populate]=*';
+    populateParam =
+      'populate[seo][populate]=*&populate[cards][populate][EmployeeImage][populate]=*&populate[cta][populate]=*';
   } else if (endpoint === '/clients-page') {
     populateParam =
       'populate[seo][populate]=*&populate[backgroundImage][populate]=*&populate[openProjects][populate][clients][populate][logo][populate]=*&populate[privateProjects][populate][clients][populate][logo][populate]=*';
