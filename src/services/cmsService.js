@@ -51,6 +51,47 @@ const setCachedData = (key, data) => {
   });
 };
 
+// Strapi v5 populate for clients-page (verified on production)
+const CLIENTS_PAGE_POPULATE =
+  'populate[seo]=true&populate[backgroundImage]=true&populate[Clients][populate]=logo';
+
+const fetchClientsPage = async () => {
+  const cacheKey = 'clients';
+  const cached = getCachedData(cacheKey);
+  if (cached) return cached;
+
+  const timestamp = Date.now();
+  const query = `/clients-page?${CLIENTS_PAGE_POPULATE}&_t=${timestamp}`;
+
+  // Public reads work without a token; retry without auth if token + populate triggers 403
+  const fetchWithoutAuth = () =>
+    axios.get(`${CMS_CONFIG.API_BASE_URL}${query}`, {
+      timeout: CMS_CONFIG.API_TIMEOUT,
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+  try {
+    let response;
+    try {
+      response = await cmsApi.get(query);
+    } catch (err) {
+      const status = err.response?.status;
+      const errorName = err.response?.data?.error?.name;
+      if (status === 403 || errorName === 'ValidationError') {
+        response = await fetchWithoutAuth();
+      } else {
+        throw err;
+      }
+    }
+
+    const data = extractData(response);
+    setCachedData(cacheKey, data);
+    return data;
+  } catch (error) {
+    throw new Error(`Failed to fetch Clients content: ${error.message}`);
+  }
+};
+
 // Generic function to fetch content with caching
 const fetchContent = async (endpoint, cacheKey) => {
   // Check cache first
@@ -72,15 +113,14 @@ const fetchContent = async (endpoint, cacheKey) => {
     populateParam =
       'populate[seo][populate]=*&populate[cards][populate][EmployeeImage][populate]=*&populate[cta][populate]=*';
   } else if (endpoint === '/clients-page') {
-    populateParam =
-      'populate[seo][populate]=*&populate[backgroundImage][populate]=*&populate[Clients][populate][logo][populate]=*';
+    populateParam = CLIENTS_PAGE_POPULATE;
   }
 
   try {
     // Add timestamp to prevent caching
     const timestamp = Date.now();
     const cacheBuster = `&_t=${timestamp}`;
-    
+
     let response;
     try {
       // Try with specific populate first
@@ -93,12 +133,12 @@ const fetchContent = async (endpoint, cacheKey) => {
         throw populateError;
       }
     }
-    
+
     const data = extractData(response);
-    
+
     // Cache the data
     setCachedData(cacheKey, data);
-    
+
     return data;
   } catch (error) {
     // For dynamic content, we don't fallback - we throw the error
@@ -111,7 +151,7 @@ export const getHomeContent = async () => {
   if (!CMS_CONFIG.ENABLE_CMS) {
     throw new Error('CMS is disabled. Please enable CMS integration.');
   }
-  
+
   return await fetchContent('/home', 'home');
 };
 
@@ -142,7 +182,7 @@ export const getServicesContent = async () => {
   if (!CMS_CONFIG.ENABLE_CMS) {
     throw new Error('CMS is disabled. Please enable CMS integration.');
   }
-  
+
   return await fetchContent('/service-page-content', 'services');
 };
 
@@ -151,7 +191,7 @@ export const getInfoContent = async () => {
   if (!CMS_CONFIG.ENABLE_CMS) {
     throw new Error('CMS is disabled. Please enable CMS integration.');
   }
-  
+
   return await fetchContent('/info', 'info');
 };
 
@@ -160,7 +200,7 @@ export const getContactContent = async () => {
   if (!CMS_CONFIG.ENABLE_CMS) {
     throw new Error('CMS is disabled. Please enable CMS integration.');
   }
-  
+
   return await fetchContent('/contact', 'contact');
 };
 
@@ -170,7 +210,7 @@ export const getClientsContent = async () => {
     throw new Error('CMS is disabled. Please enable CMS integration.');
   }
 
-  return await fetchContent('/clients-page', 'clients');
+  return fetchClientsPage();
 };
 
 // Global content (header, footer)
@@ -178,16 +218,9 @@ export const getGlobalContent = async () => {
   if (!CMS_CONFIG.ENABLE_CMS) {
     throw new Error('CMS is disabled. Please enable CMS integration.');
   }
-  
+
   return await fetchContent('/global', 'global');
 };
-
-// Remove fallback functions since we're going completely dynamic
-// export const getFallbackContent = () => {
-//   return import('../cms/content.js').then(module => module.default);
-// };
-
-
 
 export default {
   getHomeContent,
