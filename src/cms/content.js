@@ -1,8 +1,6 @@
 // Centralized content source for local development.
 // Replace with real CMS fetching later.
 
-import LogoCompany from '../assets/CompanyLogo.png';
-
 export const header = {
   brand: {
     logoAccent: 'Q',
@@ -236,47 +234,25 @@ export const contact = {
 
 export const clients = {
   seo: {
-    title: 'Our Client - Fource Technologies',
+    title: 'Our Clients - Fource Technologies',
     description:
-      'Partners and brands we serve across open government initiatives and private sector projects.',
+      'Partners we build software and digital products with — from early development through launch.',
   },
-  heading: 'TRUSTED BY LEADING ORGANISATIONS',
+  heading: 'PARTNERS WE BUILD WITH',
   lead:
-    'We are proud to collaborate with government agencies and corporate brands on campaigns that deliver measurable impact.',
-  openProjects: {
-    title: 'Open Projects',
-    description:
-      'Public-sector and openly published initiatives where our work supports transparency and community reach.',
-    clients: [
-      {
-        clientName: 'Ministry of Digital',
-        description: 'National digital outreach',
-        logo: LogoCompany,
-      },
-      { clientName: 'City Council KL', description: 'Urban engagement campaign' },
-      { clientName: 'Tourism Board', description: 'Destination branding' },
-      { clientName: 'Education Agency', description: 'Awareness & enrollment' },
-      { clientName: 'Health Department', description: 'Public health communications' },
-      { clientName: 'Transport Authority', description: 'Service launch PR' },
-    ],
-  },
-  privateProjects: {
-    title: 'Private Projects',
-    description:
-      'Confidential brand and corporate engagements delivered under NDA with full strategic support.',
-    clients: [
-      { clientName: 'Retail Group', description: 'Seasonal brand activation' },
-      { clientName: 'Fintech Startup', description: 'Product launch & media' },
-      { clientName: 'Property Developer', description: 'Luxury residential launch' },
-      { clientName: 'F&B Chain', description: 'Multi-outlet campaign' },
-      {
-        clientName: 'Tech Enterprise',
-        description: 'B2B thought leadership',
-        logo: LogoCompany,
-      },
-      { clientName: 'Automotive Brand', description: 'Showroom & digital PR' },
-    ],
-  },
+    'We work with a focused set of partners on product development — building software, platforms, and digital tools together.',
+  Clients: [
+    {
+      clientName: 'Partner Project',
+      description: 'Custom software platform currently under active development.',
+      projectStatus: 'in_development',
+    },
+    {
+      clientName: 'Former Client',
+      description: 'Product engagement completed — no longer using the platform.',
+      projectStatus: 'past',
+    },
+  ],
 };
 
 export default { header, footer, home, about, services, info, contact, clients };

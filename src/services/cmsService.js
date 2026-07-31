@@ -73,7 +73,7 @@ const fetchContent = async (endpoint, cacheKey) => {
       'populate[seo][populate]=*&populate[cards][populate][EmployeeImage][populate]=*&populate[cta][populate]=*';
   } else if (endpoint === '/clients-page') {
     populateParam =
-      'populate[seo][populate]=*&populate[backgroundImage][populate]=*&populate[openProjects][populate][clients][populate][logo][populate]=*&populate[privateProjects][populate][clients][populate][logo][populate]=*';
+      'populate[seo][populate]=*&populate[backgroundImage][populate]=*&populate[Clients][populate][logo][populate]=*';
   }
 
   try {
