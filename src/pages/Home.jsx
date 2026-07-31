@@ -2,12 +2,27 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import useCMSData from '../hooks/useCMSData';
-import * as cmsService from '../services/cmsService';
 import { getImageUrl } from '../utils/imageUtils';
 
-// Import background image and layer overlay
 import agencyDiscussionImg from '../assets/Perbincangan-Agensi-Kreatif_simple_compose.png';
-import layerImg from '../assets/Layer.png';
+
+const VALUE_PROPS = [
+  {
+    label: 'What we build',
+    value: 'Products & platforms',
+    note: 'Web apps, tools, and digital products — not one-off campaigns.',
+  },
+  {
+    label: 'How we work',
+    value: 'Small team, direct',
+    note: 'You work with the people designing and shipping the product.',
+  },
+  {
+    label: 'Engagements',
+    value: 'Long-term builds',
+    note: 'Focused partnerships from early development through launch.',
+  },
+];
 
 const Home = () => {
   const { data: home, loading, error } = useCMSData('home');
@@ -78,27 +93,22 @@ const Home = () => {
                 <button className="btn-cyber" onClick={() => navigate('/about')}>
                   Meet our team
                 </button>
-                <button className="btn-ghost" onClick={() => navigate('/services')}>
-                  View capabilities
+                <button className="btn-ghost" onClick={() => navigate('/clients')}>
+                  See our work
                 </button>
                 <span className="text-xs text-slate-400">
                   No templates • Everything built around your product
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 gap-6 pt-4 border-t border-white/5 max-w-xl">
-                <div>
-                  <div className="text-sm text-slate-400">Active clients</div>
-                  <div className="text-2xl font-semibold text-slate-50">10+</div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-400">Projects shipped</div>
-                  <div className="text-2xl font-semibold text-slate-50">25+</div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-400">Avg. NPS</div>
-                  <div className="text-2xl font-semibold text-slate-50">92</div>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-white/5 max-w-2xl">
+                {VALUE_PROPS.map((item) => (
+                  <div key={item.label} className="rounded-xl bg-white/[0.03] border border-white/5 p-4">
+                    <div className="text-[11px] uppercase tracking-wider text-slate-500">{item.label}</div>
+                    <div className="text-base font-semibold text-slate-50 mt-1">{item.value}</div>
+                    <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">{item.note}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
