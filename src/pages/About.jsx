@@ -123,23 +123,31 @@ const About = () => {
           </div>
         </section>
 
-        {/* Story + Quote */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 mb-10 md:mb-14">
+        {/* Story */}
+        <section className="mb-5 md:mb-6">
           <div className="cyber-card p-6 md:p-8">
-            <p className="text-slate-300 text-base md:text-lg leading-relaxed">{paragraphText}</p>
+            <p className="text-slate-300 text-base md:text-lg leading-relaxed max-w-4xl">{paragraphText}</p>
           </div>
-          <div className="cyber-card p-6 md:p-8 border-sky-500/20">
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-sky-500/10 border border-sky-500/30 flex items-center justify-center">
-                <svg className="w-4 h-4 text-sky-400" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z" />
-                </svg>
-              </div>
-              <p className="text-lg md:text-xl font-semibold text-slate-100 leading-relaxed italic">
+        </section>
+
+        {/* Quote — pull-quote style, works for single-line quotes */}
+        <section className="mb-10 md:mb-14">
+          <blockquote className="relative overflow-hidden rounded-2xl border border-sky-500/20 bg-slate-900/40 px-6 py-8 md:px-12 md:py-10 text-center">
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-sky-500/5 via-indigo-500/10 to-sky-500/5" />
+            <div className="relative mx-auto max-w-3xl">
+              <svg
+                className="mx-auto mb-4 h-8 w-8 text-sky-400/40"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z" />
+              </svg>
+              <p className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-100 leading-snug italic">
                 {quote}
               </p>
             </div>
-          </div>
+          </blockquote>
         </section>
 
         {/* Stats */}
