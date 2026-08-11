@@ -93,6 +93,8 @@ const About = () => {
     );
   }
 
+  console.log('About page data:', seo);
+
   return (
     <>
       <Helmet>

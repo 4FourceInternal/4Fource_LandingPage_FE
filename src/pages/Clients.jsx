@@ -12,8 +12,14 @@ const STATUS_CONFIG = {
     dot: 'bg-amber-400',
     accent: 'from-amber-500/20 to-orange-500/10 border-amber-500/20',
   },
+  beta: {
+    label: 'Beta',
+    badge: 'bg-violet-500/10 border-violet-500/30 text-violet-300',
+    dot: 'bg-violet-400',
+    accent: 'from-violet-500/20 to-indigo-500/10 border-violet-500/20',
+  },
   active: {
-    label: 'Active',
+    label: 'Live',
     badge: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300',
     dot: 'bg-emerald-400',
     accent: 'from-emerald-500/20 to-teal-500/10 border-emerald-500/20',
@@ -75,10 +81,32 @@ const getPartnershipsFromSource = (source) => {
   return [...openClients, ...privateClients];
 };
 
-const PartnershipCard = ({ client }) => {
-  const status = STATUS_CONFIG[client.status] || STATUS_CONFIG.in_development;
-  const initial = (client.name || 'P').charAt(0).toUpperCase();
-  const isPast = client.status === 'past';
+const normalizeProduct = (product, index) => {
+  const statusKey =
+    product?.productStatus && STATUS_CONFIG[product.productStatus]
+      ? product.productStatus
+      : 'in_development';
+
+  return {
+    id: product?.id ?? `product-${index}`,
+    name: product?.productName || product?.name || 'Product',
+    logo: getBestImageUrl(product?.logo) || null,
+    description: product?.description || '',
+    status: statusKey,
+    url: product?.productUrl || product?.url || null,
+  };
+};
+
+const getProductsFromSource = (source) => {
+  const products = source?.Products ?? source?.products;
+  if (!Array.isArray(products)) return [];
+  return products.map((product, index) => normalizeProduct(product, index));
+};
+
+const ItemCard = ({ item, linkLabel = 'Visit product' }) => {
+  const status = STATUS_CONFIG[item.status] || STATUS_CONFIG.in_development;
+  const initial = (item.name || 'P').charAt(0).toUpperCase();
+  const isPast = item.status === 'past';
 
   return (
     <article
@@ -91,10 +119,10 @@ const PartnershipCard = ({ client }) => {
           className={`relative flex items-center justify-center p-6 sm:p-8 bg-gradient-to-br ${status.accent}`}
         >
           <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-slate-900/60 border border-white/10 flex items-center justify-center overflow-hidden shadow-lg p-3">
-            {client.logo ? (
+            {item.logo ? (
               <img
-                src={client.logo}
-                alt={client.name}
+                src={item.logo}
+                alt={item.name}
                 className={`w-full h-full object-contain ${isPast ? 'grayscale opacity-70' : ''}`}
               />
             ) : (
@@ -110,11 +138,22 @@ const PartnershipCard = ({ client }) => {
             <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
             {status.label}
           </span>
-          <h3 className="text-xl md:text-2xl font-bold text-slate-50">{client.name}</h3>
-          {client.description ? (
+          <h3 className="text-xl md:text-2xl font-bold text-slate-50">{item.name}</h3>
+          {item.description ? (
             <p className="text-slate-400 text-sm md:text-base mt-2 leading-relaxed max-w-xl">
-              {client.description}
+              {item.description}
             </p>
+          ) : null}
+          {item.url ? (
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-fit items-center gap-1.5 mt-4 text-sm text-sky-300 hover:text-sky-200 transition-colors"
+            >
+              {linkLabel}
+              <span aria-hidden="true">→</span>
+            </a>
           ) : null}
         </div>
       </div>
@@ -133,6 +172,7 @@ const Clients = () => {
       heading: source?.heading || localClients.heading,
       lead: source?.lead || localClients.lead,
       partnerships: getPartnershipsFromSource(source),
+      products: getProductsFromSource(source),
     };
   }, [cmsData]);
 
@@ -149,6 +189,7 @@ const Clients = () => {
 
   const seo = page.seo;
   const activeCount = page.partnerships.filter((p) => p.status !== 'past').length;
+  const activeProductCount = page.products.filter((p) => p.status === 'active' || p.status === 'beta').length;
 
   return (
     <>
@@ -186,6 +227,42 @@ const Clients = () => {
           </div>
         </section>
 
+        {/* Our Products */}
+        <section className="mb-10 md:mb-14">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 md:mb-8">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-slate-50">Our Products</h2>
+              <p className="text-slate-400 text-sm mt-1">
+                Software and platforms we build and operate in-house
+                {page.products.length > 0 && (
+                  <span>
+                    {' '}
+                    · {page.products.length} product{page.products.length === 1 ? '' : 's'}
+                    {activeProductCount > 0 && (
+                      <span>
+                        {' '}
+                        · {activeProductCount} live
+                      </span>
+                    )}
+                  </span>
+                )}
+              </p>
+            </div>
+          </div>
+
+          {page.products.length > 0 ? (
+            <div className="space-y-4 md:space-y-5 max-w-3xl mx-auto">
+              {page.products.map((product) => (
+                <ItemCard key={product.id} item={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="cyber-card p-10 text-center max-w-3xl mx-auto">
+              <p className="text-slate-400">No in-house products listed yet.</p>
+            </div>
+          )}
+        </section>
+
         {/* Partnerships */}
         <section className="mb-10 md:mb-14">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 md:mb-8">
@@ -203,7 +280,7 @@ const Clients = () => {
           {page.partnerships.length > 0 ? (
             <div className="space-y-4 md:space-y-5 max-w-3xl mx-auto">
               {page.partnerships.map((client) => (
-                <PartnershipCard key={client.id} client={client} />
+                <ItemCard key={client.id} item={client} linkLabel="Learn more" />
               ))}
             </div>
           ) : (

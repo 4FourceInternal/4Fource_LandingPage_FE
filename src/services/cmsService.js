@@ -53,7 +53,7 @@ const setCachedData = (key, data) => {
 
 // Strapi v5 populate for clients-page (verified on production)
 const CLIENTS_PAGE_POPULATE =
-  'populate[seo]=true&populate[backgroundImage]=true&populate[Clients][populate]=logo';
+  'populate[seo]=true&populate[backgroundImage]=true&populate[Clients][populate]=logo&populate[Products][populate]=logo';
 
 const fetchClientsPage = async () => {
   const cacheKey = 'clients';
@@ -168,7 +168,7 @@ export const getAboutContent = async () => {
 
   try {
     const timestamp = Date.now();
-    const response = await cmsApi.get(`/about?populate[teams][populate][EmployeeImage]=true&_t=${timestamp}`);
+    const response = await cmsApi.get(`/about?populate[seo]=true&populate[teams][populate][EmployeeImage]=true&_t=${timestamp}`);
     const data = extractData(response);
     setCachedData(cacheKey, data);
     return data;

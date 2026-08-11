@@ -238,9 +238,17 @@ export const clients = {
     description:
       'Partners we build software and digital products with — from early development through launch.',
   },
-  heading: 'PARTNERS WE BUILD WITH',
+  heading: 'PRODUCTS & PARTNERSHIPS',
   lead:
-    'We work with a focused set of partners on product development — building software, platforms, and digital tools together.',
+    'Software we build in-house, and select partnerships where we help others ship their products.',
+  Products: [
+    {
+      productName: 'Your Product Name',
+      description: 'A short description of what this product does.',
+      productStatus: 'in_development',
+      productUrl: '',
+    },
+  ],
   Clients: [
     {
       clientName: 'Partner Project',
