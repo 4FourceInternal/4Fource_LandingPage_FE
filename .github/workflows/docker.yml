@@ -39,7 +39,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
+          # Pi server is ARM64 — single platform keeps CI fast and pullable on Raspberry Pi
+          platforms: linux/arm64
           push: true
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/4fource-fe:latest
