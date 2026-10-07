@@ -18,6 +18,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Lowercase repository owner (GHCR requires lowercase)
+        run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -36,5 +39,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/4fource-fe:latest
-            ghcr.io/${{ github.repository_owner }}/4fource-fe:${{ github.sha }}
+            ghcr.io/${{ env.OWNER_LC }}/4fource-fe:latest
+            ghcr.io/${{ env.OWNER_LC }}/4fource-fe:${{ github.sha }}
